@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happy Birthday, My Love 💜</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    /* ── Reset & Base ─────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lavender:        #b39ddb;
+      --lavender-light:  #ede7f6;
+      --lavender-mid:    #d1c4e9;
+      --lavender-deep:   #7e57c2;
+      --lavender-dark:   #4527a0;
+      --pink:            #f48fb1;
+      --pink-light:      #fce4ec;
+      --white:           #ffffff;
+      --text-dark:       #311b92;
+      --text-soft:       #6a3fa6;
+      --shadow:          rgba(126, 87, 194, 0.25);
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      overflow-x: hidden;
+    }
+
+    body {
+      font-family: 'Quicksand', sans-serif;
+      background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 40%, #e8eaf6 100%);
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+
+    /* ── Floating Particles ───────────────────────── */
+    #particles {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 0;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: floatUp linear infinite;
+    }
+    @keyframes floatUp {
+      0%   { transform: translateY(110vh) scale(0.5); opacity: 0; }
+      10%  { opacity: 0.6; }
+      90%  { opacity: 0.4; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    /* ── Scene Wrapper ────────────────────────────── */
+    #scene {
+      position: relative; z-index: 10;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      min-height: 100vh; width: 100%;
+      padding: 2rem;
+    }
+
+    /* ── Strawberry Character ─────────────────────── */
+    #strawberry-wrap {
+      display: flex; flex-direction: column;
+      align-items: center;
+      transition: all 0.6s ease;
+    }
+
+    .strawberry-svg {
+      width: 160px; height: auto;
+      filter: drop-shadow(0 8px 24px var(--shadow));
+      animation: berryBob 2.4s ease-in-out infinite;
+      cursor: default;
+    }
+    @keyframes berryBob {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50%       { transform: translateY(-14px) rotate(2deg); }
+    }
+
+    /* eyes blink */
+    .eye { animation: blink 4s ease-in-out infinite; }
+    @keyframes blink {
+      0%, 90%, 100% { transform: scaleY(1); }
+      95%            { transform: scaleY(0.08); }
+    }
+
+    /* mouth — open/close handled by JS */
+    .berry-mouth { transition: all 0.08s ease; }
+
+    /* ── Speech Bubble ────────────────────────────── */
+    #bubble-wrap {
+      position: relative;
+      margin-bottom: 10px;
+      opacity: 0;
+      transform: translateY(10px) scale(0.9);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+    #bubble-wrap.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    #bubble {
+      background: var(--white);
+      border: 2.5px solid var(--lavender);
+      border-radius: 24px;
+      padding: 18px 26px;
+      max-width: 340px;
+      min-width: 200px;
+      text-align: center;
+      font-size: 1rem;
+      line-height: 1.6;
+      color: var(--text-dark);
+      box-shadow: 0 6px 28px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
+      position: relative;
+    }
+    /* tail */
+    #bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -16px; left: 50%;
+      transform: translateX(-50%);
+      border: 8px solid transparent;
+      border-top-color: var(--lavender);
+    }
+    #bubble::before {
+      content: '';
+      position: absolute;
+      bottom: -12px; left: 50%;
+      transform: translateX(-50%);
+      border: 7px solid transparent;
+      border-top-color: var(--white);
+      z-index: 1;
+    }
+
+    #bubble-text {
+      min-height: 1.6em;
+    }
+
+    /* cursor blink */
+    .cursor {
+      display: inline-block;
+      width: 2px; height: 1em;
+      background: var(--lavender-deep);
+      margin-left: 2px;
+      vertical-align: middle;
+      animation: cursorBlink 0.7s steps(1) infinite;
+    }
+    @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    /* ── Next Button ──────────────────────────────── */
+    #next-btn {
+      display: block;
+      margin: 32px auto 0;
+      padding: 14px 40px;
+      background: linear-gradient(135deg, var(--lavender-deep), var(--lavender-dark));
+      color: #fff;
+      border: none;
+      border-radius: 50px;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      letter-spacing: 0.04em;
+      box-shadow: 0 6px 24px var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(8px);
+    }
+    #next-btn.show {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+      transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s, box-shadow 0.2s, background 0.2s;
+    }
+    #next-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 32px var(--shadow);
+    }
+
+    /* ── Gift Box ─────────────────────────────────── */
+    #gift-scene {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      animation: fadeIn 0.8s ease forwards;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+    #gift-box-wrap {
+      cursor: pointer;
+      display: flex; flex-direction: column;
+      align-items: center;
+      transition: transform 0.3s;
+    }
+    #gift-box-wrap:hover { transform: scale(1.05); }
+    #gift-box-wrap.open { animation: boxShake 0.5s ease; }
+    @keyframes boxShake {
+      0%,100% { transform: rotate(0); }
+      20%      { transform: rotate(-5deg) scale(1.05); }
+      40%      { transform: rotate(5deg) scale(1.08); }
+      60%      { transform: rotate(-3deg); }
+      80%      { transform: rotate(3deg); }
+    }
+
+    .gift-svg { width: 200px; filter: drop-shadow(0 12px 32px var(--shadow)); }
+
+    #tap-hint {
+      margin-top: 14px;
+      font-size: 0.9rem; color: var(--text-soft);
+      letter-spacing: 0.05em;
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ── Letter Modal ─────────────────────────────── */
+    #letter-overlay {
+      display: none;
+      position: fixed; inset: 0; z-index: 100;
+      background: rgba(69, 39, 160, 0.35);
+      backdrop-filter: blur(6px);
+      justify-content: center; align-items: center;
+      padding: 1rem;
+      animation: fadeIn 0.4s ease forwards;
+    }
+    #letter-overlay.open { display: flex; }
+
+    #letter-card {
+      background: linear-gradient(160deg, #fff 0%, #f3e5f5 100%);
+      border: 2px solid var(--lavender-mid);
+      border-radius: 28px;
+      max-width: 680px; width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 20px 80px rgba(69, 39, 160, 0.3);
+      position: relative;
+      scrollbar-width: thin;
+      scrollbar-color: var(--lavender) transparent;
+    }
+
+    #close-btn {
+      position: absolute; top: 18px; right: 22px;
+      background: none; border: none;
+      font-size: 1.6rem; cursor: pointer;
+      color: var(--lavender-deep);
+      transition: transform 0.2s;
+      line-height: 1;
+    }
+    #close-btn:hover { transform: scale(1.3) rotate(90deg); }
+
+    .letter-header {
+      text-align: center; margin-bottom: 2rem;
+    }
+    .letter-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--lavender-dark);
+      margin-bottom: 0.4rem;
+    }
+    .letter-header .subtitle {
+      font-size: 0.95rem; color: var(--text-soft);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    .letter-divider {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--lavender-mid), transparent);
+      margin: 1.5rem 0;
+    }
+
+    .letter-body {
+      font-size: 1.05rem; line-height: 1.9;
+      color: var(--text-dark);
+      white-space: pre-line;
+    }
+
+    /* ── Photo Grid ───────────────────────────────── */
+    .photo-section { margin-top: 2.5rem; }
+    .photo-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.4rem;
+      color: var(--lavender-deep);
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 14px;
+    }
+
+    .photo-frame {
+      aspect-ratio: 1 / 1;
+      border-radius: 18px;
+      overflow: hidden;
+      border: 3px solid var(--lavender-mid);
+      box-shadow: 0 6px 20px var(--shadow);
+      background: var(--lavender-light);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: var(--text-soft);
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 1rem;
+      transition: transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      cursor: pointer;
+    }
+    .photo-frame:hover {
+      transform: translateY(-4px) rotate(1deg);
+      box-shadow: 0 14px 36px var(--shadow);
+    }
+    .photo-frame img {
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: none;
+    }
+    .photo-frame img.loaded { display: block; }
+    .photo-frame .placeholder-icon { font-size: 2.2rem; margin-bottom: 6px; }
+    .photo-frame .placeholder-label { font-size: 0.75rem; opacity: 0.7; }
+
+    .letter-footer {
+      text-align: center; margin-top: 2.5rem;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.15rem;
+      color: var(--lavender-deep);
+    }
+
+    /* ── Confetti Canvas ──────────────────────────── */
+    #confetti-canvas {
+      position: fixed; inset: 0;
+      pointer-events: none; z-index: 50;
+    }
+
+    /* lid lift stages */
+    @keyframes lidLift1 {
+      0%   { transform: translateY(0)   rotate(0deg);   opacity: 1; }
+      100% { transform: translateY(-18px) rotate(-6deg); opacity: 1; }
+    }
+    @keyframes lidLift2 {
+      0%   { transform: translateY(-18px) rotate(-6deg); }
+      100% { transform: translateY(-36px) rotate(-12deg); }
+    }
+    @keyframes lidLift3 {
+      0%   { transform: translateY(-36px) rotate(-12deg); opacity: 1; }
+      100% { transform: translateY(-80px) rotate(-20deg); opacity: 0; }
+    }
+    #gift-lid-group { transform-origin: 100px 90px; transition: none; }
+    #gift-lid-group.lift1 { animation: lidLift1 0.4s ease forwards; }
+    #gift-lid-group.lift2 { animation: lidLift2 0.4s ease forwards; }
+    #gift-lid-group.lift3 { animation: lidLift3 0.45s ease forwards; }
+
+    /* ── Gift scene layout wrapper ───────────────── */
+    #gift-scene-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 28px;
+    }
+
+    /* ── "I Love You" — fixed to screen corners/top ── */
+    #ily-display {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .ily-word {
+      position: fixed;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      color: var(--lavender-dark);
+      text-shadow: 0 3px 20px rgba(126,87,194,0.5);
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      /* start position: centre of screen (where the box is) */
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%) scale(0.4);
+      transition: opacity 0.7s cubic-bezier(.22,1,.36,1),
+                  top    0.7s cubic-bezier(.22,1,.36,1),
+                  left   0.7s cubic-bezier(.22,1,.36,1),
+                  transform 0.7s cubic-bezier(.22,1,.36,1);
+    }
+    #word-i    { font-size: 4rem; transition-delay: 0s; }
+    #word-love { font-size: 3.2rem; transition-delay: 0s; }
+    #word-you  { font-size: 4rem; transition-delay: 0s; }
+
+    /* final resting positions */
+    #word-i.visible {
+      opacity: 1;
+      top: 6vh; left: 5vw;
+      transform: translate(0, 0) scale(1);
+      animation: ilyFloat 3.2s ease-in-out 0.7s infinite;
+    }
+    #word-love.visible {
+      opacity: 1;
+      top: 5vh; left: 50%;
+      transform: translateX(-50%) scale(1);
+      animation: ilyFloatCenter 3.2s ease-in-out 1s infinite;
+    }
+    #word-you.visible {
+      opacity: 1;
+      top: 6vh; right: 5vw; left: auto;
+      transform: translate(0, 0) scale(1);
+      animation: ilyFloat 3.2s ease-in-out 0.85s infinite;
+    }
+    @keyframes ilyFloat {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(0,-10px) scale(1); }
+    }
+    @keyframes ilyFloatCenter {
+      0%,100% { transform: translateX(-50%) translateY(0) scale(1); }
+      50%      { transform: translateX(-50%) translateY(-10px) scale(1); }
+    }
+
+    /* ── Mini Strawberry — horizontal row below the gift ── */
+    #mini-berry-wrap {
+      display: none;
+      flex-direction: row;
+      align-items: center;
+      gap: 12px;
+      z-index: 20;
+    }
+    #mini-berry-wrap.show { display: flex; }
+
+    .mini-berry-svg {
+      width: 64px; height: auto;
+      flex-shrink: 0;
+      filter: drop-shadow(0 4px 12px var(--shadow));
+      animation: berryBob 2.4s ease-in-out infinite;
+    }
+    .mini-eye { animation: blink 4s ease-in-out infinite; }
+
+    #mini-bubble-wrap {
+      opacity: 0;
+      transform: translateX(-8px) scale(0.9);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      max-width: 220px;
+    }
+    #mini-bubble-wrap.show {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+    }
+    #mini-bubble {
+      background: var(--white);
+      border: 2px solid var(--lavender);
+      border-radius: 14px;
+      padding: 9px 13px;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: var(--text-dark);
+      box-shadow: 0 4px 16px var(--shadow);
+      position: relative;
+    }
+    /* tail points LEFT toward the strawberry */
+    #mini-bubble::after {
+      content: '';
+      position: absolute;
+      top: 50%; left: -12px;
+      transform: translateY(-50%);
+      border: 6px solid transparent;
+      border-right-color: var(--lavender);
+    }
+    #mini-bubble::before {
+      content: '';
+      position: absolute;
+      top: 50%; left: -9px;
+      transform: translateY(-50%);
+      border: 5px solid transparent;
+      border-right-color: var(--white);
+      z-index: 1;
+    }
+
+    /* gift click feedback */
+    @keyframes giftBump {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      25%      { transform: scale(1.08) rotate(-4deg); }
+      75%      { transform: scale(1.08) rotate(4deg); }
+    }
+    .gift-bump { animation: giftBump 0.35s ease; }
+
+    @keyframes giftWiggle {
+      0%,100% { transform: scale(1) rotate(0deg); }
+      20%      { transform: scale(1.12) rotate(-6deg); }
+      40%      { transform: scale(1.12) rotate(6deg); }
+      60%      { transform: scale(1.1)  rotate(-4deg); }
+      80%      { transform: scale(1.1)  rotate(4deg); }
+    }
+    .gift-wiggle { animation: giftWiggle 0.5s ease; }
+
+    /* ── Responsive ───────────────────────────────── */
+    @media (max-width: 480px) {
+      .strawberry-svg { width: 120px; }
+      #bubble { font-size: 0.92rem; max-width: 280px; }
+      .letter-header h1 { font-size: 1.6rem; }
+      #letter-card { padding: 2rem 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Particles -->
+<div id="particles"></div>
+
+<!-- Confetti -->
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Main Scene -->
+<div id="scene">
+
+  <!-- Dialogue phase -->
+  <div id="dialogue-phase">
+    <div id="bubble-wrap">
+      <div id="bubble"><span id="bubble-text"></span><span class="cursor" id="cursor"></span></div>
+    </div>
+
+    <div id="strawberry-wrap">
+      <!-- Strawberry SVG character -->
+      <svg class="strawberry-svg" id="berry-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+        <!-- leaves -->
+        <g>
+          <ellipse cx="80" cy="38" rx="12" ry="22" fill="#66bb6a" transform="rotate(-20 80 38)"/>
+          <ellipse cx="80" cy="38" rx="12" ry="22" fill="#81c784" transform="rotate(0 80 38)"/>
+          <ellipse cx="80" cy="38" rx="12" ry="22" fill="#66bb6a" transform="rotate(20 80 38)"/>
+          <ellipse cx="80" cy="38" rx="8" ry="16" fill="#a5d6a7" transform="rotate(-10 80 38)"/>
+          <ellipse cx="80" cy="38" rx="8" ry="16" fill="#a5d6a7" transform="rotate(10 80 38)"/>
+        </g>
+        <!-- body -->
+        <path d="M30,70 Q20,110 40,145 Q60,180 80,185 Q100,180 120,145 Q140,110 130,70 Q110,52 80,52 Q50,52 30,70 Z"
+              fill="#e53935"/>
+        <!-- shine -->
+        <ellipse cx="60" cy="90" rx="10" ry="14" fill="rgba(255,255,255,0.2)" transform="rotate(-15 60 90)"/>
+        <!-- seeds -->
+        <g fill="#ffcc80" opacity="0.85">
+          <ellipse cx="65"  cy="85"  rx="3.5" ry="5" transform="rotate(-10 65 85)"/>
+          <ellipse cx="95"  cy="85"  rx="3.5" ry="5" transform="rotate(10 95 85)"/>
+          <ellipse cx="55"  cy="112" rx="3.5" ry="5" transform="rotate(-8 55 112)"/>
+          <ellipse cx="80"  cy="108" rx="3.5" ry="5"/>
+          <ellipse cx="105" cy="112" rx="3.5" ry="5" transform="rotate(8 105 112)"/>
+          <ellipse cx="62"  cy="138" rx="3.5" ry="5" transform="rotate(-5 62 138)"/>
+          <ellipse cx="90"  cy="140" rx="3.5" ry="5" transform="rotate(5 90 140)"/>
+          <ellipse cx="75"  cy="162" rx="3"   ry="4"/>
+        </g>
+        <!-- face: eyes -->
+        <g class="eye" style="transform-origin:67px 100px">
+          <ellipse cx="67" cy="100" rx="6" ry="7" fill="#1a1a2e"/>
+          <circle  cx="69" cy="98"  r="2"  fill="#fff"/>
+        </g>
+        <g class="eye" style="transform-origin:93px 100px">
+          <ellipse cx="93" cy="100" rx="6" ry="7" fill="#1a1a2e"/>
+          <circle  cx="95" cy="98"  r="2"  fill="#fff"/>
+        </g>
+        <!-- cheeks -->
+        <ellipse cx="55" cy="115" rx="8" ry="5" fill="#f06292" opacity="0.4"/>
+        <ellipse cx="105" cy="115" rx="8" ry="5" fill="#f06292" opacity="0.4"/>
+        <!-- mouth: two states toggled by JS -->
+        <g id="mouth-group">
+          <!-- closed smile (shown when silent) -->
+          <path id="mouth-smile"
+                d="M68,122 Q80,132 92,122"
+                fill="none" stroke="#1a1a2e" stroke-width="2.8"
+                stroke-linecap="round"/>
+          <!-- open mouth (shown when talking) -->
+          <g id="mouth-open" style="display:none">
+            <ellipse cx="80" cy="125" rx="10" ry="7" fill="#1a1a2e"/>
+            <ellipse cx="80" cy="122" rx="10" ry="4" fill="#e53935"/><!-- gum top matches body -->
+            <ellipse cx="80" cy="128" rx="8"  ry="3" fill="#f8bbd0"/><!-- tongue -->
+          </g>
+        </g>
+      </svg>
+    </div>
+
+    <button id="next-btn">Continue ✨</button>
+  </div>
+
+  <!-- ILY words — fixed to screen, outside all layout -->
+  <div id="ily-display">
+    <span class="ily-word" id="word-i">I</span>
+    <span class="ily-word" id="word-love">Love</span>
+    <span class="ily-word" id="word-you">You</span>
+  </div>
+
+  <!-- Gift phase -->
+  <div id="gift-scene">
+
+    <!-- Gift box + mini strawberry below -->
+    <div id="gift-scene-inner">
+
+      <div id="gift-box-wrap" onclick="handleGiftClick()">
+        <svg class="gift-svg" id="gift-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+          <!-- box body (drawn first, behind lid) -->
+          <rect x="20" y="90" width="160" height="110" rx="6" fill="#b39ddb"/>
+          <!-- ribbon vertical on body -->
+          <rect x="88" y="90" width="24" height="110" rx="0" fill="#f48fb1" opacity="0.7"/>
+          <!-- ribbon horizontal on body -->
+          <rect x="20" y="138" width="160" height="20" rx="0" fill="#f48fb1" opacity="0.7"/>
+          <!-- shine on box -->
+          <rect x="30" y="98" width="40" height="8" rx="4" fill="rgba(255,255,255,0.2)"/>
+          <!-- stars decoration -->
+          <text x="38" y="135" font-size="18" fill="rgba(255,255,255,0.5)">✦</text>
+          <text x="130" y="170" font-size="14" fill="rgba(255,255,255,0.4)">✦</text>
+          <text x="155" y="120" font-size="10" fill="rgba(255,255,255,0.3)">✦</text>
+          <!-- lid group (animated separately) -->
+          <g id="gift-lid-group">
+            <rect x="20" y="60" width="160" height="30" rx="6" fill="#9575cd"/>
+            <rect x="10" y="55" width="180" height="40" rx="8" fill="#7e57c2"/>
+            <!-- ribbon vertical on lid -->
+            <rect x="88" y="55" width="24" height="40" rx="4" fill="#f48fb1"/>
+            <!-- bow loops -->
+            <ellipse cx="80" cy="55" rx="22" ry="13" fill="#f48fb1" transform="rotate(-20 80 55)"/>
+            <ellipse cx="120" cy="55" rx="22" ry="13" fill="#e91e8c" opacity="0.8" transform="rotate(20 120 55)"/>
+            <!-- bow center -->
+            <circle cx="100" cy="55" r="10" fill="#f06292"/>
+          </g>
+        </svg>
+        <div id="tap-hint">💜 tap to open your gift 💜</div>
+      </div>
+
+      <!-- Mini strawberry: berry on left, bubble on right -->
+      <div id="mini-berry-wrap">
+        <svg id="mini-berry-svg" class="mini-berry-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
+          <g>
+            <ellipse cx="80" cy="38" rx="12" ry="22" fill="#66bb6a" transform="rotate(-20 80 38)"/>
+            <ellipse cx="80" cy="38" rx="12" ry="22" fill="#81c784" transform="rotate(0 80 38)"/>
+            <ellipse cx="80" cy="38" rx="12" ry="22" fill="#66bb6a" transform="rotate(20 80 38)"/>
+            <ellipse cx="80" cy="38" rx="8" ry="16" fill="#a5d6a7" transform="rotate(-10 80 38)"/>
+            <ellipse cx="80" cy="38" rx="8" ry="16" fill="#a5d6a7" transform="rotate(10 80 38)"/>
+          </g>
+          <path d="M30,70 Q20,110 40,145 Q60,180 80,185 Q100,180 120,145 Q140,110 130,70 Q110,52 80,52 Q50,52 30,70 Z" fill="#e53935"/>
+          <ellipse cx="60" cy="90" rx="10" ry="14" fill="rgba(255,255,255,0.2)" transform="rotate(-15 60 90)"/>
+          <g fill="#ffcc80" opacity="0.85">
+            <ellipse cx="65"  cy="85"  rx="3.5" ry="5" transform="rotate(-10 65 85)"/>
+            <ellipse cx="95"  cy="85"  rx="3.5" ry="5" transform="rotate(10 95 85)"/>
+            <ellipse cx="55"  cy="112" rx="3.5" ry="5" transform="rotate(-8 55 112)"/>
+            <ellipse cx="80"  cy="108" rx="3.5" ry="5"/>
+            <ellipse cx="105" cy="112" rx="3.5" ry="5" transform="rotate(8 105 112)"/>
+            <ellipse cx="62"  cy="138" rx="3.5" ry="5" transform="rotate(-5 62 138)"/>
+            <ellipse cx="90"  cy="140" rx="3.5" ry="5" transform="rotate(5 90 140)"/>
+            <ellipse cx="75"  cy="162" rx="3"   ry="4"/>
+          </g>
+          <g class="mini-eye" style="transform-origin:67px 100px">
+            <ellipse cx="67" cy="100" rx="6" ry="7" fill="#1a1a2e"/>
+            <circle  cx="69" cy="98"  r="2"  fill="#fff"/>
+          </g>
+          <g class="mini-eye" style="transform-origin:93px 100px">
+            <ellipse cx="93" cy="100" rx="6" ry="7" fill="#1a1a2e"/>
+            <circle  cx="95" cy="98"  r="2"  fill="#fff"/>
+          </g>
+          <ellipse cx="55" cy="115" rx="8" ry="5" fill="#f06292" opacity="0.4"/>
+          <ellipse cx="105" cy="115" rx="8" ry="5" fill="#f06292" opacity="0.4"/>
+          <g id="mini-mouth-group">
+            <path id="mini-mouth-smile" d="M68,122 Q80,132 92,122" fill="none" stroke="#1a1a2e" stroke-width="2.8" stroke-linecap="round"/>
+            <g id="mini-mouth-open" style="display:none">
+              <ellipse cx="80" cy="125" rx="10" ry="7" fill="#1a1a2e"/>
+              <ellipse cx="80" cy="122" rx="10" ry="4" fill="#e53935"/>
+              <ellipse cx="80" cy="128" rx="8"  ry="3" fill="#f8bbd0"/>
+            </g>
+          </g>
+        </svg>
+        <div id="mini-bubble-wrap">
+          <div id="mini-bubble"><span id="mini-bubble-text"></span><span class="cursor" id="mini-cursor"></span></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Letter Overlay -->
+<div id="letter-overlay">
+  <div id="letter-card">
+    <button id="close-btn" onclick="closeLetter()" title="Close">×</button>
+
+    <div class="letter-header">
+      <h1>Happy Birthday, My Love 🍓</h1>
+      <div class="subtitle">a little something, just for you</div>
+    </div>
+    <div class="letter-divider"></div>
+
+    <!--
+      ✏️ EDIT YOUR MESSAGE BELOW
+      Replace the text between the <p> tags with your own sweet message.
+      You can add more <p> tags for more paragraphs.
+    -->
+    <div class="letter-body">
+      <p>Hey you,</p>
+      <br>
+      <p>On this very special day, I just want you to know how incredibly grateful I am that you exist — and that somehow, by the greatest luck in the universe, you're mine.</p>
+      <br>
+      <p>You make every ordinary day feel like something worth remembering. Your laugh, your warmth, the way you care so deeply about everything and everyone — it all makes me fall for you, over and over again.</p>
+      <br>
+      <p>I could write a thousand pages and still not capture everything I feel. But know this: you are so deeply loved, celebrated, and cherished — not just today, but every single day.</p>
+      <br>
+      <p>Happy birthday, my love. Here's to you — and to all the beautiful adventures still ahead of us. 💜</p>
+      <br>
+      <p style="font-family:'Playfair Display',serif; font-style:italic;">Forever yours ✨</p>
+    </div>
+
+    <!-- Photos Section -->
+    <div class="photo-section">
+      <h2>✦ Our little memories ✦</h2>
+      <div class="photo-grid" id="photo-grid">
+        <!--
+          ✏️ HOW TO ADD YOUR PHOTOS:
+          Replace the src="" in each <img> tag with your image path or URL.
+          E.g.: <img src="photos/us1.jpg" ...>  or  <img src="https://your-url.com/photo.jpg" ...>
+          The image will show automatically once a valid src is provided.
+          You can duplicate or remove .photo-frame blocks to change the count.
+        -->
+        <div class="photo-frame" data-src="">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-label">Add photo 1<br><small>replace data-src</small></div>
+          <img src="" alt="Memory 1" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+        </div>
+        <div class="photo-frame" data-src="">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-label">Add photo 2<br><small>replace data-src</small></div>
+          <img src="" alt="Memory 2" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+        </div>
+        <div class="photo-frame" data-src="">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-label">Add photo 3<br><small>replace data-src</small></div>
+          <img src="" alt="Memory 3" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+        </div>
+        <div class="photo-frame" data-src="">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-label">Add photo 4<br><small>replace data-src</small></div>
+          <img src="" alt="Memory 4" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+        </div>
+        <div class="photo-frame" data-src="">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-label">Add photo 5<br><small>replace data-src</small></div>
+          <img src="" alt="Memory 5" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+        </div>
+        <div class="photo-frame" data-src="">
+          <div class="placeholder-icon">📷</div>
+          <div class="placeholder-label">Add photo 6<br><small>replace data-src</small></div>
+          <img src="" alt="Memory 6" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+        </div>
+      </div>
+    </div>
+
+    <div class="letter-footer">
+      Made with 💜 just for you
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ── Floating Particles ─────────────────────────── */
+  (function spawnParticles() {
+    const container = document.getElementById('particles');
+    const colors = ['#d1c4e9','#b39ddb','#f48fb1','#ede7f6','#ce93d8','#f3e5f5'];
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const size = 6 + Math.random() * 14;
+      p.style.cssText = `
+        width:${size}px; height:${size}px;
+        background:${colors[Math.floor(Math.random()*colors.length)]};
+        left:${Math.random()*100}%;
+        animation-duration:${8+Math.random()*14}s;
+        animation-delay:${Math.random()*-20}s;
+      `;
+      container.appendChild(p);
+    }
+  })();
+
+  /* ── Dialogues ──────────────────────────────────── */
+  const dialogues = [
+    "Psst… hey, you! 🍓",
+    "Yeah, I'm a talking strawberry. Totally normal. Moving on…",
+    "I heard it's someone very special's birthday today! 🎂",
+    "Someone kind, beautiful, and absolutely wonderful…",
+    "Someone who deserves all the love in the world 💜",
+    "So I've been sent on a very important mission…",
+    "To deliver something straight from the heart 🎁",
+    "Are you ready? There's a little gift waiting for you…",
+  ];
+
+  let dialogueIndex = 0;
+  let typingTimer = null;
+  let charIndex = 0;
+  let isTalking = false;
+
+  const bubbleWrap = document.getElementById('bubble-wrap');
+  const bubbleText = document.getElementById('bubble-text');
+  const cursor    = document.getElementById('cursor');
+  const nextBtn   = document.getElementById('next-btn');
+  const berrySvg  = document.getElementById('berry-svg');
+
+  const mouthSmile = document.getElementById('mouth-smile');
+  const mouthOpen  = document.getElementById('mouth-open');
+  let mouthToggle  = false;
+
+  function setMouth(open) {
+    mouthSmile.style.display = open ? 'none'  : '';
+    mouthOpen.style.display  = open ? ''      : 'none';
+  }
+
+  function setTalking(state) {
+    if (!state) setMouth(false); // always close when done
+    if (state) berrySvg.classList.add('talking');
+    else        berrySvg.classList.remove('talking');
+  }
+
+  function typeText(text, onDone) {
+    charIndex = 0;
+    bubbleText.textContent = '';
+    cursor.style.display = 'inline-block';
+    setTalking(true);
+
+    function tick() {
+      if (charIndex < text.length) {
+        bubbleText.textContent += text[charIndex++];
+        // alternate open/close on each visible character
+        const ch = text[charIndex - 1];
+        if (ch !== ' ') {
+          mouthToggle = !mouthToggle;
+          setMouth(mouthToggle);
+        }
+        typingTimer = setTimeout(tick, 38 + Math.random() * 22);
+      } else {
+        setMouth(false);
+        setTalking(false);
+        cursor.style.display = 'none';
+        if (onDone) onDone();
+      }
+    }
+    tick();
+  }
+
+  function showDialogue(index) {
+    bubbleWrap.classList.add('show');
+    nextBtn.classList.remove('show');
+
+    typeText(dialogues[index], () => {
+      const isLast = index === dialogues.length - 1;
+      nextBtn.textContent = isLast ? "Open my gift 🎁" : "Continue ✨";
+      nextBtn.classList.add('show');
+    });
+  }
+
+  nextBtn.addEventListener('click', () => {
+    dialogueIndex++;
+    if (dialogueIndex < dialogues.length) {
+      showDialogue(dialogueIndex);
+    } else {
+      transitionToGift();
+    }
+  });
+
+  function transitionToGift() {
+    const dialoguePhase = document.getElementById('dialogue-phase');
+    const giftScene     = document.getElementById('gift-scene');
+
+    dialoguePhase.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+    dialoguePhase.style.opacity = '0';
+    dialoguePhase.style.transform = 'scale(0.92)';
+
+    setTimeout(() => {
+      dialoguePhase.style.display = 'none';
+      giftScene.style.display = 'flex';
+      // mini strawberry appears and gives first hint
+      setTimeout(() => showMiniPrompt("Psst! Click the box to unwrap it! 🎁"), 700);
+    }, 600);
+  }
+
+  /* ── Gift / Letter (3-click system) ────────────── */
+  let giftClicks = 0;
+  const CLICKS_NEEDED = 3;
+  let miniTypingTimer = null;
+  let miniMouthToggle = false;
+
+  const miniSmile  = document.getElementById('mini-mouth-smile');
+  const miniOpen   = document.getElementById('mini-mouth-open');
+  const miniBubbleWrap = document.getElementById('mini-bubble-wrap');
+  const miniBubbleText = document.getElementById('mini-bubble-text');
+  const miniCursor     = document.getElementById('mini-cursor');
+  const miniBerryWrap  = document.getElementById('mini-berry-wrap');
+  const miniBerry      = document.getElementById('mini-berry-svg');
+
+  const giftPrompts = [
+    // shown after click 1 (1 more needed)
+    "Ooh! Keep going — two more times! 🍓",
+    // shown after click 2 (1 more needed)
+    "So close!! One more tap! 💜",
+  ];
+
+  function setMiniMouth(open) {
+    miniSmile.style.display = open ? 'none' : '';
+    miniOpen.style.display  = open ? ''     : 'none';
+  }
+
+  function miniTypeText(text, onDone) {
+    clearTimeout(miniTypingTimer);
+    miniBubbleText.textContent = '';
+    miniCursor.style.display = 'inline-block';
+    let i = 0;
+    function tick() {
+      if (i < text.length) {
+        miniBubbleText.textContent += text[i++];
+        if (text[i-1] !== ' ') {
+          miniMouthToggle = !miniMouthToggle;
+          setMiniMouth(miniMouthToggle);
+        }
+        miniTypingTimer = setTimeout(tick, 36 + Math.random() * 20);
+      } else {
+        setMiniMouth(false);
+        miniCursor.style.display = 'none';
+        if (onDone) onDone();
+      }
+    }
+    tick();
+  }
+
+  function showMiniPrompt(text) {
+    miniBerryWrap.classList.add('show');
+    // small delay so it feels like a reaction
+    setTimeout(() => {
+      miniBubbleWrap.classList.add('show');
+      miniTypeText(text);
+    }, 150);
+  }
+
+  function handleGiftClick() {
+    if (giftClicks >= CLICKS_NEEDED) return;
+    giftClicks++;
+
+    const wrap    = document.getElementById('gift-box-wrap');
+    const lidGrp  = document.getElementById('gift-lid-group');
+    const wordI    = document.getElementById('word-i');
+    const wordLove = document.getElementById('word-love');
+    const wordYou  = document.getElementById('word-you');
+    const tapHint  = document.getElementById('tap-hint');
+
+    if (giftClicks === 1) {
+      // lid lifts a little, "I" appears
+      lidGrp.classList.remove('lift2','lift3');
+      void lidGrp.offsetWidth;
+      lidGrp.classList.add('lift1');
+      setTimeout(() => wordI.classList.add('visible'), 250);
+      tapHint.textContent = '💜 tap again 💜';
+      showMiniPrompt(giftPrompts[0]);
+
+    } else if (giftClicks === 2) {
+      // lid lifts more, "Love" appears
+      lidGrp.classList.remove('lift1','lift3');
+      void lidGrp.offsetWidth;
+      lidGrp.classList.add('lift2');
+      setTimeout(() => wordLove.classList.add('visible'), 250);
+      tapHint.textContent = '💜 one more time 💜';
+      showMiniPrompt(giftPrompts[1]);
+
+    } else {
+      // lid flies off, "You" appears, then letter opens
+      lidGrp.classList.remove('lift1','lift2');
+      void lidGrp.offsetWidth;
+      lidGrp.classList.add('lift3');
+      setTimeout(() => wordYou.classList.add('visible'), 200);
+      tapHint.style.display = 'none';
+      miniBerryWrap.classList.remove('show');
+
+      // bump the whole box for drama
+      wrap.classList.add('open');
+
+      setTimeout(() => {
+        document.getElementById('letter-overlay').classList.add('open');
+        launchConfetti();
+      }, 900);
+    }
+  }
+
+  function openLetter() { /* kept for safety, now unused */ }
+
+  function closeLetter() {
+    document.getElementById('letter-overlay').classList.remove('open');
+  }
+
+  // Close on overlay click
+  document.getElementById('letter-overlay').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('letter-overlay')) closeLetter();
+  });
+
+  /* ── Confetti ───────────────────────────────────── */
+  function launchConfetti() {
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#b39ddb','#f48fb1','#ce93d8','#fff176','#80cbc4','#f3e5f5','#ede7f6'];
+    const pieces = Array.from({ length: 120 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -20 - Math.random() * canvas.height * 0.5,
+      r: 5 + Math.random() * 6,
+      d: 2 + Math.random() * 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      tilt: Math.random() * 10 - 5,
+      tiltAngle: 0,
+      tiltSpeed: 0.05 + Math.random() * 0.1,
+      shape: Math.random() > 0.5 ? 'circle' : 'rect',
+    }));
+
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        ctx.beginPath();
+        ctx.fillStyle = p.color;
+        if (p.shape === 'circle') {
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        } else {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.tilt * Math.PI) / 180);
+          ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
+          ctx.restore();
+        }
+        ctx.fill();
+
+        p.y      += p.d;
+        p.tiltAngle += p.tiltSpeed;
+        p.tilt    = Math.sin(p.tiltAngle) * 12;
+        p.x      += Math.sin(p.tiltAngle) * 1.2;
+
+        if (p.y > canvas.height + 20) {
+          p.y = -20;
+          p.x = Math.random() * canvas.width;
+        }
+      });
+      frame++;
+      if (frame < 300) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    draw();
+  }
+
+  /* ── Init ───────────────────────────────────────── */
+  window.addEventListener('load', () => {
+    setTimeout(() => showDialogue(0), 600);
+  });
+</script>
+</body>
+</html>
