@@ -36,23 +36,23 @@
       align-items: center; justify-content: center;
     }
 
-    /* ── Floating Particles ───────────────────────── */
+    /* ── Floating Background Elements ─────────────── */
     #particles {
       position: fixed; inset: 0;
       pointer-events: none; z-index: 0;
       overflow: hidden;
     }
-    .particle {
+    .floater {
       position: absolute;
-      border-radius: 50%;
       opacity: 0;
-      animation: floatUp linear infinite;
+      animation: floatSway linear infinite;
     }
-    @keyframes floatUp {
-      0%   { transform: translateY(110vh) scale(0.5); opacity: 0; }
-      10%  { opacity: 0.6; }
-      90%  { opacity: 0.4; }
-      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    @keyframes floatSway {
+      0%   { transform: translateY(110vh) translateX(0)            rotate(0deg)   scale(0.7); opacity: 0; }
+      8%   { opacity: 0.85; }
+      50%  { transform: translateY(50vh)  translateX(var(--sway))  rotate(180deg) scale(1);   opacity: 0.75; }
+      92%  { opacity: 0.6; }
+      100% { transform: translateY(-12vh) translateX(0)            rotate(360deg) scale(0.9); opacity: 0; }
     }
 
     /* ── Scene Wrapper ────────────────────────────── */
@@ -484,52 +484,38 @@
       z-index: 1;
     }
 
-    /* ── Peeking paper (after gift opened) ───────────── */
-    #peek-paper {
+    /* ── Big letter (replaces box after opened) ──────── */
+    #big-letter-wrap {
       display: none;
-      position: relative;
-      margin-top: -54px; /* overlap up into the open box */
-      align-self: center;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
       cursor: pointer;
-      z-index: 12;
-      filter: drop-shadow(0 4px 14px rgba(126,87,194,0.35));
-      pointer-events: auto;
+      animation: fadeInUp 0.6s cubic-bezier(.22,1,.36,1) forwards;
     }
-    #peek-paper.show {
-      display: block;
-      animation: peekBob 2s ease-in-out infinite;
+    #big-letter-wrap.show { display: flex; }
+    #big-letter-wrap:hover #big-letter {
+      filter: drop-shadow(0 8px 28px rgba(126,87,194,0.5));
+      transform: translateY(-6px) rotate(-1deg);
     }
-    #peek-paper:hover { animation: peekBobHover 0.7s ease-in-out infinite !important; }
-
-    @keyframes peekBob {
-      0%,100% { transform: translateY(0); }
-      50%      { transform: translateY(-9px); }
+    #big-letter {
+      filter: drop-shadow(0 6px 20px rgba(126,87,194,0.3));
+      transition: filter 0.3s ease, transform 0.3s ease;
+      animation: letterFloat 3s ease-in-out infinite;
     }
-    @keyframes peekBobHover {
-      0%,100% { transform: translateY(-5px) scale(1.07); }
-      50%      { transform: translateY(-14px) scale(1.1); }
+    @keyframes letterFloat {
+      0%,100% { transform: translateY(0) rotate(0deg); }
+      50%      { transform: translateY(-10px) rotate(1deg); }
     }
-
-    /* fly-out: paper shoots up from box to centre screen */
-    #peek-paper.fly-out {
-      display: block;
-      animation: paperFlyOut 0.55s cubic-bezier(.22,1,.36,1) forwards !important;
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px) scale(0.85); }
+      to   { opacity: 1; transform: translateY(0)    scale(1); }
     }
-    @keyframes paperFlyOut {
-      0%   { transform: translateY(0)    scale(0.85) rotate(-3deg); opacity: 1; }
-      60%  { transform: translateY(-280px) scale(1.15) rotate(2deg);  opacity: 1; }
-      100% { transform: translateY(-240px) scale(1)   rotate(0deg);  opacity: 0; }
-    }
-
-    /* fly-in: paper drops back into box after letter closed */
-    #peek-paper.fly-in {
-      display: block;
-      animation: paperFlyIn 0.5s cubic-bezier(.55,0,.7,1) forwards !important;
-    }
-    @keyframes paperFlyIn {
-      0%   { transform: translateY(-200px) scale(1)    rotate(0deg); opacity: 0; }
-      40%  { opacity: 1; }
-      100% { transform: translateY(0)      scale(0.9)  rotate(3deg); opacity: 1; }
+    #letter-hint {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      letter-spacing: 0.05em;
+      animation: pulse 1.8s ease-in-out infinite;
     }
     @keyframes giftBump {
       0%,100% { transform: scale(1) rotate(0deg); }
@@ -645,74 +631,54 @@
     <!-- Gift box + mini strawberry below -->
     <div id="gift-scene-inner">
 
-      <div id="gift-box-wrap" onclick="handleGiftClick()" style="position:relative;">
+      <!-- The gift box (shown during 3-click phase) -->
+      <div id="gift-box-wrap" onclick="handleGiftClick()">
         <svg class="gift-svg" id="gift-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
-          <!-- box body (drawn first, behind lid) -->
           <rect x="20" y="90" width="160" height="110" rx="6" fill="#b39ddb"/>
-          <!-- ribbon vertical on body -->
           <rect x="88" y="90" width="24" height="110" rx="0" fill="#f48fb1" opacity="0.7"/>
-          <!-- ribbon horizontal on body -->
           <rect x="20" y="138" width="160" height="20" rx="0" fill="#f48fb1" opacity="0.7"/>
-          <!-- shine on box -->
           <rect x="30" y="98" width="40" height="8" rx="4" fill="rgba(255,255,255,0.2)"/>
-          <!-- stars decoration -->
           <text x="38" y="135" font-size="18" fill="rgba(255,255,255,0.5)">✦</text>
           <text x="130" y="170" font-size="14" fill="rgba(255,255,255,0.4)">✦</text>
           <text x="155" y="120" font-size="10" fill="rgba(255,255,255,0.3)">✦</text>
-          <!-- lid group (animated separately) -->
           <g id="gift-lid-group">
             <rect x="20" y="60" width="160" height="30" rx="6" fill="#9575cd"/>
             <rect x="10" y="55" width="180" height="40" rx="8" fill="#7e57c2"/>
-            <!-- ribbon vertical on lid -->
             <rect x="88" y="55" width="24" height="40" rx="4" fill="#f48fb1"/>
-            <!-- bow loops -->
             <ellipse cx="80" cy="55" rx="22" ry="13" fill="#f48fb1" transform="rotate(-20 80 55)"/>
             <ellipse cx="120" cy="55" rx="22" ry="13" fill="#e91e8c" opacity="0.8" transform="rotate(20 120 55)"/>
-            <!-- bow center -->
             <circle cx="100" cy="55" r="10" fill="#f06292"/>
           </g>
         </svg>
-
-        <!-- Peeking paper — appears after box is opened, click to reopen letter -->
-        <svg id="peek-paper" onclick="reopenLetter(event)" width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
-          <!-- paper body -->
-          <rect x="4" y="2" width="64" height="84" rx="5" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2"/>
-          <!-- dog-ear fold top-right -->
-          <path d="M52,2 L68,18 L52,18 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="1.5" stroke-linejoin="round"/>
-          <!-- fold crease line -->
-          <line x1="52" y1="2" x2="52" y2="18" stroke="#d1c4e9" stroke-width="1"/>
-          <!-- decorative lines (text lines) -->
-          <line x1="14" y1="30" x2="58" y2="30" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="14" y1="40" x2="58" y2="40" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="14" y1="50" x2="58" y2="50" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="14" y1="60" x2="44" y2="60" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-          <!-- small heart doodle -->
-          <path d="M32,72 C32,72 26,66.5 26,63 C26,61 27.8,60 29.5,60 C30.8,60 32,61.2 32,61.2 C32,61.2 33.2,60 34.5,60 C36.2,60 38,61 38,63 C38,66.5 32,72 32,72Z" fill="#f48fb1" opacity="0.7"/>
-          <!-- sparkle -->
-          <text x="48" y="76" font-size="10" fill="#ce93d8" opacity="0.8">✦</text>
-        </svg>
-
         <div id="tap-hint">💜 tap to open your gift 💜</div>
       </div>
 
-      <!-- Peeking paper — sits over the box, outside gift-box-wrap so clicks always register -->
-      <svg id="peek-paper" width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
-        <!-- paper body -->
-        <rect x="4" y="2" width="64" height="84" rx="5" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2"/>
-        <!-- dog-ear fold top-right -->
-        <path d="M52,2 L68,18 L52,18 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="1.5" stroke-linejoin="round"/>
-        <!-- fold crease line -->
-        <line x1="52" y1="2" x2="52" y2="18" stroke="#d1c4e9" stroke-width="1"/>
-        <!-- decorative lines (text lines) -->
-        <line x1="14" y1="30" x2="58" y2="30" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="14" y1="40" x2="58" y2="40" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="14" y1="50" x2="58" y2="50" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-        <line x1="14" y1="60" x2="44" y2="60" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
-        <!-- small heart doodle -->
-        <path d="M32,72 C32,72 26,66.5 26,63 C26,61 27.8,60 29.5,60 C30.8,60 32,61.2 32,61.2 C32,61.2 33.2,60 34.5,60 C36.2,60 38,61 38,63 C38,66.5 32,72 32,72Z" fill="#f48fb1" opacity="0.7"/>
-        <!-- sparkle -->
-        <text x="48" y="76" font-size="10" fill="#ce93d8" opacity="0.8">✦</text>
-      </svg>
+      <!-- Big letter icon — replaces the box after it's opened -->
+      <div id="big-letter-wrap">
+        <svg id="big-letter" width="160" height="196" viewBox="0 0 160 196" xmlns="http://www.w3.org/2000/svg">
+          <!-- paper shadow -->
+          <rect x="18" y="14" width="128" height="172" rx="10" fill="rgba(179,157,219,0.25)"/>
+          <!-- paper body -->
+          <rect x="12" y="8" width="136" height="172" rx="10" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2.5"/>
+          <!-- dog-ear fold top-right -->
+          <path d="M112,8 L148,44 L112,44 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="2" stroke-linejoin="round"/>
+          <line x1="112" y1="8" x2="112" y2="44" stroke="#d1c4e9" stroke-width="1.5"/>
+          <!-- ruled lines -->
+          <line x1="30" y1="66"  x2="130" y2="66"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+          <line x1="30" y1="82"  x2="130" y2="82"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+          <line x1="30" y1="98"  x2="130" y2="98"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+          <line x1="30" y1="114" x2="130" y2="114" stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+          <line x1="30" y1="130" x2="100" y2="130" stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+          <!-- heart -->
+          <path d="M80,162 C80,162 58,148 58,136 C58,130 62,127 66.5,127 C69.5,127 72,129 73.5,130.5 C75,129 77.5,127 80,127 C82.5,127 85,129 86.5,130.5 C88,129 90.5,127 93.5,127 C98,127 102,130 102,136 C102,148 80,162 80,162Z" fill="#f48fb1" opacity="0.8"/>
+          <!-- sparkles -->
+          <text x="130" y="168" font-size="16" fill="#ce93d8" opacity="0.7">✦</text>
+          <text x="20"  y="52"  font-size="12" fill="#b39ddb" opacity="0.6">✦</text>
+        </svg>
+        <div id="letter-hint">💜 tap to read again 💜</div>
+      </div>
+
+      <!-- Mini strawberry: berry on left, bubble on right -->
       <div id="mini-berry-wrap">
         <svg id="mini-berry-svg" class="mini-berry-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
           <g>
@@ -845,22 +811,116 @@
 </div>
 
 <script>
-  /* ── Floating Particles ─────────────────────────── */
-  (function spawnParticles() {
+  /* ── Floating Background Elements ───────────────── */
+  (function spawnFloaters() {
     const container = document.getElementById('particles');
-    const colors = ['#d1c4e9','#b39ddb','#f48fb1','#ede7f6','#ce93d8','#f3e5f5'];
-    for (let i = 0; i < 40; i++) {
-      const p = document.createElement('div');
-      p.className = 'particle';
-      const size = 6 + Math.random() * 14;
-      p.style.cssText = `
-        width:${size}px; height:${size}px;
-        background:${colors[Math.floor(Math.random()*colors.length)]};
-        left:${Math.random()*100}%;
-        animation-duration:${8+Math.random()*14}s;
-        animation-delay:${Math.random()*-20}s;
+
+    // SVG templates — returns an SVG string for each type
+    function makeCake(size) {
+      const s = size / 48;
+      return `<svg width="${size}" height="${size * 1.1}" viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg">
+        <!-- candle -->
+        <rect x="21" y="2" width="6" height="10" rx="2" fill="#f8bbd0"/>
+        <!-- flame -->
+        <ellipse cx="24" cy="2" rx="2.5" ry="3.5" fill="#ffcc80"/>
+        <ellipse cx="24" cy="1.5" rx="1.2" ry="2" fill="#fff9c4" opacity="0.9"/>
+        <!-- top tier -->
+        <rect x="10" y="12" width="28" height="12" rx="4" fill="#ce93d8"/>
+        <!-- frosting drips top -->
+        <path d="M10,18 Q13,24 16,18 Q19,24 22,18 Q25,24 28,18 Q31,24 34,18 Q37,24 38,18" fill="none" stroke="#f3e5f5" stroke-width="3" stroke-linecap="round"/>
+        <!-- bottom tier -->
+        <rect x="4" y="24" width="40" height="16" rx="4" fill="#b39ddb"/>
+        <!-- frosting drips bottom -->
+        <path d="M4,30 Q8,38 12,30 Q16,38 20,30 Q24,38 28,30 Q32,38 36,30 Q40,38 44,30" fill="none" stroke="#e1bee7" stroke-width="3" stroke-linecap="round"/>
+        <!-- plate -->
+        <ellipse cx="24" cy="40" rx="22" ry="4" fill="#7e57c2" opacity="0.6"/>
+        <!-- dots decoration -->
+        <circle cx="18" cy="30" r="2" fill="#f48fb1" opacity="0.8"/>
+        <circle cx="24" cy="28" r="2" fill="#fff9c4" opacity="0.8"/>
+        <circle cx="30" cy="30" r="2" fill="#f48fb1" opacity="0.8"/>
+      </svg>`;
+    }
+
+    function makeFlower(size) {
+      return `<svg width="${size}" height="${size * 1.3}" viewBox="0 0 36 48" xmlns="http://www.w3.org/2000/svg">
+        <!-- stem -->
+        <path d="M18,48 Q14,36 18,28" fill="none" stroke="#81c784" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- leaves -->
+        <path d="M18,40 Q10,34 12,28" fill="none" stroke="#81c784" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="14" cy="34" rx="5" ry="3" fill="#a5d6a7" opacity="0.8" transform="rotate(-30 14 34)"/>
+        <path d="M18,36 Q26,30 24,24" fill="none" stroke="#81c784" stroke-width="2" stroke-linecap="round"/>
+        <ellipse cx="22" cy="30" rx="5" ry="3" fill="#a5d6a7" opacity="0.8" transform="rotate(30 22 30)"/>
+        <!-- petals -->
+        <ellipse cx="18" cy="14" rx="4" ry="8" fill="#b39ddb" opacity="0.85"/>
+        <ellipse cx="18" cy="14" rx="4" ry="8" fill="#ce93d8" opacity="0.75" transform="rotate(45 18 22)"/>
+        <ellipse cx="18" cy="14" rx="4" ry="8" fill="#b39ddb" opacity="0.8"  transform="rotate(90 18 22)"/>
+        <ellipse cx="18" cy="14" rx="4" ry="8" fill="#ce93d8" opacity="0.75" transform="rotate(135 18 22)"/>
+        <!-- centre -->
+        <circle cx="18" cy="22" r="5" fill="#f3e5f5"/>
+        <circle cx="18" cy="22" r="3" fill="#f8bbd0"/>
+        <circle cx="18" cy="22" r="1.5" fill="#f48fb1"/>
+      </svg>`;
+    }
+
+    function makeConfetti(size) {
+      const shapes = [
+        // rectangle strip
+        `<svg width="${size}" height="${size * 0.4}" viewBox="0 0 30 12" xmlns="http://www.w3.org/2000/svg">
+          <rect x="0" y="0" width="30" height="12" rx="3" fill="${pickColor()}"/>
+        </svg>`,
+        // circle dot
+        `<svg width="${size * 0.7}" height="${size * 0.7}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="10" cy="10" r="10" fill="${pickColor()}"/>
+        </svg>`,
+        // star
+        `<svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" fill="${pickColor()}" opacity="0.9"/>
+        </svg>`,
+        // diamond
+        `<svg width="${size * 0.7}" height="${size}" viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="10,0 20,14 10,28 0,14" fill="${pickColor()}" opacity="0.85"/>
+        </svg>`,
+      ];
+      return shapes[Math.floor(Math.random() * shapes.length)];
+    }
+
+    function pickColor() {
+      const colors = ['#b39ddb','#f48fb1','#ce93d8','#fff176','#80deea','#f8bbd0','#e1bee7','#80cbc4'];
+      return colors[Math.floor(Math.random() * colors.length)];
+    }
+
+    const types = ['cake','flower','confetti','confetti','confetti']; // more confetti
+    const total = 55;
+
+    for (let i = 0; i < total; i++) {
+      const type = types[Math.floor(Math.random() * types.length)];
+      const el = document.createElement('div');
+      el.className = 'floater';
+
+      let size, html;
+      if (type === 'cake') {
+        size = 28 + Math.random() * 22;
+        html = makeCake(size);
+      } else if (type === 'flower') {
+        size = 22 + Math.random() * 18;
+        html = makeFlower(size);
+      } else {
+        size = 12 + Math.random() * 14;
+        html = makeConfetti(size);
+      }
+
+      el.innerHTML = html;
+      const dur  = (type === 'cake' ? 14 : 9) + Math.random() * 10;
+      const sway = (Math.random() - 0.5) * 60; // horizontal drift
+      el.style.cssText = `
+        left: ${Math.random() * 105 - 2}%;
+        animation-duration: ${dur}s;
+        animation-delay: ${Math.random() * -dur}s;
+        --sway: ${sway}px;
       `;
-      container.appendChild(p);
+      // override animation to include horizontal sway
+      el.style.animation = `floatSway ${dur}s linear ${-(Math.random() * dur)}s infinite`;
+      container.appendChild(el);
     }
   })();
 
@@ -1081,44 +1141,35 @@
       setTimeout(() => wordYou.classList.add('visible'), 200);
       tapHint.style.display = 'none';
       miniBerryWrap.classList.remove('show');
-
-      // bump the whole box for drama
       wrap.classList.add('open');
 
       setTimeout(() => {
         document.getElementById('letter-overlay').classList.add('open');
         launchConfetti();
+        // fade out the box — big letter will appear when letter is first closed
+        setTimeout(() => {
+          wrap.style.transition = 'opacity 0.5s ease';
+          wrap.style.opacity = '0';
+          setTimeout(() => { wrap.style.display = 'none'; }, 500);
+        }, 400);
       }, 900);
     }
   }
 
-  // Wire peek-paper click via JS (inline onclick is unreliable with display:none toggling)
-  document.getElementById('peek-paper').addEventListener('click', function(e) {
-    e.stopPropagation();
+  // Wire big-letter click to reopen
+  document.getElementById('big-letter-wrap').addEventListener('click', function() {
     reopenLetter();
   });
 
   function closeLetter() {
     document.getElementById('letter-overlay').classList.remove('open');
-    const paper = document.getElementById('peek-paper');
-    paper.classList.remove('show', 'fly-out');
-    paper.classList.add('fly-in');
-    paper.addEventListener('animationend', () => {
-      paper.classList.remove('fly-in');
-      paper.classList.add('show');
-    }, { once: true });
-    document.getElementById('gift-box-wrap').onclick = null;
+    // swap box for big letter
+    const bigLetter = document.getElementById('big-letter-wrap');
+    bigLetter.classList.add('show');
   }
 
   function reopenLetter() {
-    const paper = document.getElementById('peek-paper');
-    if (!paper.classList.contains('show')) return; // only fire when bobbing
-    paper.classList.remove('show');
-    paper.classList.add('fly-out');
-    paper.addEventListener('animationend', () => {
-      paper.classList.remove('fly-out');
-      document.getElementById('letter-overlay').classList.add('open');
-    }, { once: true });
+    document.getElementById('letter-overlay').classList.add('open');
   }
 
   // Close on overlay click
