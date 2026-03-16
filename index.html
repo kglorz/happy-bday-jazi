@@ -484,7 +484,53 @@
       z-index: 1;
     }
 
-    /* gift click feedback */
+    /* ── Peeking paper (after gift opened) ───────────── */
+    #peek-paper {
+      display: none;
+      position: relative;
+      margin-top: -54px; /* overlap up into the open box */
+      align-self: center;
+      cursor: pointer;
+      z-index: 12;
+      filter: drop-shadow(0 4px 14px rgba(126,87,194,0.35));
+      pointer-events: auto;
+    }
+    #peek-paper.show {
+      display: block;
+      animation: peekBob 2s ease-in-out infinite;
+    }
+    #peek-paper:hover { animation: peekBobHover 0.7s ease-in-out infinite !important; }
+
+    @keyframes peekBob {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-9px); }
+    }
+    @keyframes peekBobHover {
+      0%,100% { transform: translateY(-5px) scale(1.07); }
+      50%      { transform: translateY(-14px) scale(1.1); }
+    }
+
+    /* fly-out: paper shoots up from box to centre screen */
+    #peek-paper.fly-out {
+      display: block;
+      animation: paperFlyOut 0.55s cubic-bezier(.22,1,.36,1) forwards !important;
+    }
+    @keyframes paperFlyOut {
+      0%   { transform: translateY(0)    scale(0.85) rotate(-3deg); opacity: 1; }
+      60%  { transform: translateY(-280px) scale(1.15) rotate(2deg);  opacity: 1; }
+      100% { transform: translateY(-240px) scale(1)   rotate(0deg);  opacity: 0; }
+    }
+
+    /* fly-in: paper drops back into box after letter closed */
+    #peek-paper.fly-in {
+      display: block;
+      animation: paperFlyIn 0.5s cubic-bezier(.55,0,.7,1) forwards !important;
+    }
+    @keyframes paperFlyIn {
+      0%   { transform: translateY(-200px) scale(1)    rotate(0deg); opacity: 0; }
+      40%  { opacity: 1; }
+      100% { transform: translateY(0)      scale(0.9)  rotate(3deg); opacity: 1; }
+    }
     @keyframes giftBump {
       0%,100% { transform: scale(1) rotate(0deg); }
       25%      { transform: scale(1.08) rotate(-4deg); }
@@ -599,7 +645,7 @@
     <!-- Gift box + mini strawberry below -->
     <div id="gift-scene-inner">
 
-      <div id="gift-box-wrap" onclick="handleGiftClick()">
+      <div id="gift-box-wrap" onclick="handleGiftClick()" style="position:relative;">
         <svg class="gift-svg" id="gift-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
           <!-- box body (drawn first, behind lid) -->
           <rect x="20" y="90" width="160" height="110" rx="6" fill="#b39ddb"/>
@@ -626,10 +672,47 @@
             <circle cx="100" cy="55" r="10" fill="#f06292"/>
           </g>
         </svg>
+
+        <!-- Peeking paper — appears after box is opened, click to reopen letter -->
+        <svg id="peek-paper" onclick="reopenLetter(event)" width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
+          <!-- paper body -->
+          <rect x="4" y="2" width="64" height="84" rx="5" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2"/>
+          <!-- dog-ear fold top-right -->
+          <path d="M52,2 L68,18 L52,18 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="1.5" stroke-linejoin="round"/>
+          <!-- fold crease line -->
+          <line x1="52" y1="2" x2="52" y2="18" stroke="#d1c4e9" stroke-width="1"/>
+          <!-- decorative lines (text lines) -->
+          <line x1="14" y1="30" x2="58" y2="30" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="14" y1="40" x2="58" y2="40" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="14" y1="50" x2="58" y2="50" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+          <line x1="14" y1="60" x2="44" y2="60" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+          <!-- small heart doodle -->
+          <path d="M32,72 C32,72 26,66.5 26,63 C26,61 27.8,60 29.5,60 C30.8,60 32,61.2 32,61.2 C32,61.2 33.2,60 34.5,60 C36.2,60 38,61 38,63 C38,66.5 32,72 32,72Z" fill="#f48fb1" opacity="0.7"/>
+          <!-- sparkle -->
+          <text x="48" y="76" font-size="10" fill="#ce93d8" opacity="0.8">✦</text>
+        </svg>
+
         <div id="tap-hint">💜 tap to open your gift 💜</div>
       </div>
 
-      <!-- Mini strawberry: berry on left, bubble on right -->
+      <!-- Peeking paper — sits over the box, outside gift-box-wrap so clicks always register -->
+      <svg id="peek-paper" width="72" height="88" viewBox="0 0 72 88" xmlns="http://www.w3.org/2000/svg">
+        <!-- paper body -->
+        <rect x="4" y="2" width="64" height="84" rx="5" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2"/>
+        <!-- dog-ear fold top-right -->
+        <path d="M52,2 L68,18 L52,18 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="1.5" stroke-linejoin="round"/>
+        <!-- fold crease line -->
+        <line x1="52" y1="2" x2="52" y2="18" stroke="#d1c4e9" stroke-width="1"/>
+        <!-- decorative lines (text lines) -->
+        <line x1="14" y1="30" x2="58" y2="30" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="14" y1="40" x2="58" y2="40" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="14" y1="50" x2="58" y2="50" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+        <line x1="14" y1="60" x2="44" y2="60" stroke="#d1c4e9" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- small heart doodle -->
+        <path d="M32,72 C32,72 26,66.5 26,63 C26,61 27.8,60 29.5,60 C30.8,60 32,61.2 32,61.2 C32,61.2 33.2,60 34.5,60 C36.2,60 38,61 38,63 C38,66.5 32,72 32,72Z" fill="#f48fb1" opacity="0.7"/>
+        <!-- sparkle -->
+        <text x="48" y="76" font-size="10" fill="#ce93d8" opacity="0.8">✦</text>
+      </svg>
       <div id="mini-berry-wrap">
         <svg id="mini-berry-svg" class="mini-berry-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
           <g>
@@ -1009,10 +1092,33 @@
     }
   }
 
-  function openLetter() { /* kept for safety, now unused */ }
+  // Wire peek-paper click via JS (inline onclick is unreliable with display:none toggling)
+  document.getElementById('peek-paper').addEventListener('click', function(e) {
+    e.stopPropagation();
+    reopenLetter();
+  });
 
   function closeLetter() {
     document.getElementById('letter-overlay').classList.remove('open');
+    const paper = document.getElementById('peek-paper');
+    paper.classList.remove('show', 'fly-out');
+    paper.classList.add('fly-in');
+    paper.addEventListener('animationend', () => {
+      paper.classList.remove('fly-in');
+      paper.classList.add('show');
+    }, { once: true });
+    document.getElementById('gift-box-wrap').onclick = null;
+  }
+
+  function reopenLetter() {
+    const paper = document.getElementById('peek-paper');
+    if (!paper.classList.contains('show')) return; // only fire when bobbing
+    paper.classList.remove('show');
+    paper.classList.add('fly-out');
+    paper.addEventListener('animationend', () => {
+      paper.classList.remove('fly-out');
+      document.getElementById('letter-overlay').classList.add('open');
+    }, { once: true });
   }
 
   // Close on overlay click
