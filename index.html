@@ -116,6 +116,7 @@
     .letter-header .subtitle { font-size: 0.95rem; color: var(--text-soft); letter-spacing: 0.08em; text-transform: uppercase; }
     .letter-divider { height: 2px; background: linear-gradient(90deg, transparent, var(--lavender-mid), transparent); margin: 1.5rem 0; }
     .letter-body { font-size: 1.05rem; line-height: 1.9; color: var(--text-dark); white-space: pre-line; }
+    /* ── Photo Stack Overlay ── */
     #photo-stack-overlay {
       display: none; position: fixed; inset: 0; z-index: 100;
       background: rgba(69, 39, 160, 0.45); backdrop-filter: blur(8px);
@@ -144,6 +145,20 @@
     .polaroid-caption { margin-top: 8px; font-family: 'Quicksand', sans-serif; font-size: 0.82rem; color: #555; text-align: center; min-height: 1.2em; line-height: 1.4; padding: 0 4px; }
     #photo-tap-hint { margin-top: 50px; font-size: 0.88rem; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; animation: pulse 1.8s ease-in-out infinite; text-align: center; }
     #photo-counter { margin-top: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.55); letter-spacing: 0.05em; }
+    /* ── Photo Stack Exit Button (replays only) ── */
+    #photo-exit-btn {
+      display: none;
+      position: absolute; top: 20px; right: 20px;
+      width: 42px; height: 42px; border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: 2px solid rgba(255,255,255,0.45);
+      color: #fff; font-size: 1.1rem;
+      cursor: pointer; line-height: 1;
+      transition: background 0.2s, transform 0.2s;
+      z-index: 10;
+    }
+    #photo-exit-btn.show { display: block; }
+    #photo-exit-btn:hover { background: rgba(255,255,255,0.3); transform: scale(1.12) rotate(90deg); }
     .letter-footer { text-align: center; margin-top: 2.5rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; color: var(--lavender-deep); }
     #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
     @keyframes lidLift1 { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-18px) rotate(-6deg); opacity: 1; } }
@@ -380,7 +395,9 @@
 
 </div>
 
+<!-- Photo Stack Overlay — exit button hidden on first run, shown on replays -->
 <div id="photo-stack-overlay">
+  <button id="photo-exit-btn">✕</button>
   <div id="photo-stack"></div>
   <div id="photo-tap-hint">tap to reveal our memories 📷</div>
   <div id="photo-counter"></div>
@@ -412,6 +429,27 @@
 </div>
 
 <script>
+  /* ── Audio — defined first so all functions can reference them ── */
+  const bgm = new Audio('Audio/bgm.mp3');
+  bgm.loop = true; bgm.volume = 0.10;
+  let bgmStarted = false;
+
+  const talkingSfx = new Audio('Audio/talking.mp3');
+  talkingSfx.loop = true; talkingSfx.volume = 0.15; talkingSfx.preload = 'auto';
+
+  const shakeSfx = new Audio('Audio/shaking.mp3');
+  shakeSfx.volume = 0.3; shakeSfx.preload = 'auto';
+  let shakeTimer = null;
+
+  let talkingEnabled = true;
+
+  function playShake() {
+    if (shakeTimer) clearTimeout(shakeTimer);
+    shakeSfx.currentTime = 0;
+    shakeSfx.play().catch(() => {});
+    shakeTimer = setTimeout(() => { shakeSfx.pause(); shakeSfx.currentTime = 0; }, 1000);
+  }
+
   /* ── Floating Background Elements ───────────────── */
   (function spawnFloaters() {
     const container = document.getElementById('particles');
@@ -645,7 +683,6 @@
   function handleGiftClick() {
     if (giftClicks >= CLICKS_NEEDED) return;
     giftClicks++;
-    // play shake sound on every tap
     playShake();
     const wrap    = document.getElementById('gift-box-wrap');
     const lidGrp  = document.getElementById('gift-lid-group');
@@ -655,7 +692,6 @@
     const tapHint  = document.getElementById('tap-hint');
 
     if (giftClicks === 1) {
-      // shake the whole box
       wrap.classList.remove('gift-wiggle'); void wrap.offsetWidth; wrap.classList.add('gift-wiggle');
       wrap.addEventListener('animationend', () => wrap.classList.remove('gift-wiggle'), { once: true });
       lidGrp.classList.remove('lift2','lift3'); void lidGrp.offsetWidth; lidGrp.classList.add('lift1');
@@ -663,7 +699,6 @@
       tapHint.textContent = '💜 tap again 💜';
       showMiniPrompt(giftPrompts[0]);
     } else if (giftClicks === 2) {
-      // shake the whole box
       wrap.classList.remove('gift-wiggle'); void wrap.offsetWidth; wrap.classList.add('gift-wiggle');
       wrap.addEventListener('animationend', () => wrap.classList.remove('gift-wiggle'), { once: true });
       lidGrp.classList.remove('lift1','lift3'); void lidGrp.offsetWidth; lidGrp.classList.add('lift2');
@@ -690,28 +725,28 @@
 
   /* ── Photo Stack ─────────────────────────────────── */
   const photos = [
-    { src: "Photos/chat.jpg", caption: "our first convo" },
-    { src: "Photos/vd.jpg", caption: "our first official-ish date (sa valentines pa talaga)" },
+    { src: "Photos/chat.jpg",  caption: "our first convo" },
+    { src: "Photos/vd.jpg",   caption: "our first official-ish date (sa valentines pa talaga)" },
     { src: "Photos/boba.jpg", caption: "with boba" },
-    { src: "Photos/pd.jpg", caption: "first time playing pool together" },
-    { src: "Photos/md.jpg", caption: "first movie date" },
+    { src: "Photos/pd.jpg",   caption: "first time playing pool together" },
+    { src: "Photos/md.jpg",   caption: "first movie date" },
     { src: "Photos/mcdo.jpg", caption: "mcdo gang" },
-    { src: "Photos/bh.jpg", caption: "your first visit sa bh" },
-    { src: "Photos/l1.jpg", caption: "langi" },
-    { src: "Photos/shd.jpg", caption: "first sizig hut date" },
-    { src: "Photos/cb.jpg", caption: "couple bracelet :)" },
-    { src: "Photos/sf.jpg", caption: "shadow fight??" },
-    { src: "Photos/nmd.jpg", caption: "first night market date" },
-    { src: "Photos/l2.jpg", caption: "langi na naman" },
-    { src: "Photos/sl.jpg", caption: "na softlaunch ni purcom baddie??" },
-    { src: "Photos/l3.jpg", caption: "walang katapusang langi" },
-    { src: "Photos/so.jpg", caption: "first sleepover" },
-    { src: "Photos/m1.jpg", caption: "first meetup w/ my elem friends" },
-    { src: "Photos/vc.jpg", caption: "videocall na para bang di buong araw magkasama" },
-    { src: "Photos/hs.jpg", caption: "fav homescreen <3" },
-    { src: "Photos/ls.jpg", caption: "fav lockscreen (na para bang hidden gem)" },
-    { src: "Photos/ilysm.jpg", caption: "I love you so much" },
-    { src: "Photos/hbd.jpg", caption: "happy birthday, my wife" },
+    { src: "Photos/bh.jpg",   caption: "your first visit sa bh" },
+    { src: "Photos/l1.jpg",   caption: "langi" },
+    { src: "Photos/shd.jpg",  caption: "first sizig hut date" },
+    { src: "Photos/cb.jpg",   caption: "couple bracelet :)" },
+    { src: "Photos/sf.jpg",   caption: "shadow fight??" },
+    { src: "Photos/nmd.jpg",  caption: "first night market date" },
+    { src: "Photos/l2.jpg",   caption: "langi na naman" },
+    { src: "Photos/sl.jpg",   caption: "na softlaunch ni purcom baddie??" },
+    { src: "Photos/l3.jpg",   caption: "walang katapusang langi" },
+    { src: "Photos/so.jpg",   caption: "first sleepover" },
+    { src: "Photos/m1.jpg",   caption: "first meetup w/ my elem friends" },
+    { src: "Photos/vc.jpg",   caption: "videocall na para bang di buong araw magkasama" },
+    { src: "Photos/hs.jpg",   caption: "fav homescreen <3" },
+    { src: "Photos/ls.jpg",   caption: "fav lockscreen (na para bang hidden gem)" },
+    { src: "Photos/ilysm.jpg",caption: "I love you so much" },
+    { src: "Photos/hbd.jpg",  caption: "happy birthday, my wife" },
   ];
 
   let photoIndex = -1;
@@ -719,6 +754,7 @@
   const stackOverlay = document.getElementById('photo-stack-overlay');
   const tapHintEl    = document.getElementById('photo-tap-hint');
   const counterEl    = document.getElementById('photo-counter');
+  const photoExitBtn = document.getElementById('photo-exit-btn');
   const rotations    = photos.map(() => (Math.random() * 18 - 9).toFixed(1));
 
   function buildPolaroid(index) {
@@ -739,24 +775,21 @@
 
   let firstPhotoRun = true;
 
-  let talkingEnabled = true;
-
   function openPhotoStack() {
     photoIndex = -1;
     stackEl.innerHTML = '';
     document.getElementById('open-shelf').classList.remove('show');
-    // stop talking sfx — strawberry is done for good
     talkingEnabled = false;
-    talkingSfx.pause();
-    talkingSfx.currentTime = 0;
-    // hide the mini strawberry — it's done its job
+    talkingSfx.pause(); talkingSfx.currentTime = 0;
     miniBerryWrap.style.transition = 'opacity 0.4s ease';
     miniBerryWrap.style.opacity = '0';
     setTimeout(() => { miniBerryWrap.style.display = 'none'; }, 400);
+    // show exit button only on replays
+    if (firstPhotoRun) photoExitBtn.classList.remove('show');
+    else               photoExitBtn.classList.add('show');
     stackOverlay.classList.add('open');
     counterEl.textContent = `0 / ${photos.length}`;
     tapHintEl.textContent = 'tap to reveal our memories 📷';
-    // automatically show the first photo
     setTimeout(() => revealNextPhoto(), 400);
   }
 
@@ -779,6 +812,7 @@
       if (photoIndex === photos.length - 1) tapHintEl.textContent = 'tap to continue 💜';
     } else {
       stackOverlay.classList.remove('open');
+      photoExitBtn.classList.remove('show');
       if (firstPhotoRun) {
         firstPhotoRun = false;
         document.getElementById('letter-overlay').classList.add('open');
@@ -788,10 +822,18 @@
     }
   }
 
+  // exit button — stop propagation so it doesn't trigger revealNextPhoto
+  photoExitBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    stackOverlay.classList.remove('open');
+    photoExitBtn.classList.remove('show');
+    document.getElementById('open-shelf').classList.add('show');
+  });
+
   stackOverlay.addEventListener('click', revealNextPhoto);
 
-  document.getElementById('shelf-photos').addEventListener('click', function() { openPhotoStack(); });
-  document.getElementById('shelf-letter').addEventListener('click', function() { document.getElementById('letter-overlay').classList.add('open'); });
+  document.getElementById('shelf-photos').addEventListener('click', () => openPhotoStack());
+  document.getElementById('shelf-letter').addEventListener('click', () => document.getElementById('letter-overlay').classList.add('open'));
 
   function closeLetter() {
     document.getElementById('letter-overlay').classList.remove('open');
@@ -805,18 +847,13 @@
   function launchConfetti() {
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth; canvas.height = window.innerHeight;
     const colors = ['#b39ddb','#f48fb1','#ce93d8','#fff176','#80cbc4','#f3e5f5','#ede7f6'];
     const pieces = Array.from({ length: 120 }, () => ({
-      x: Math.random() * canvas.width,
-      y: -20 - Math.random() * canvas.height * 0.5,
-      r: 5 + Math.random() * 6,
-      d: 2 + Math.random() * 3,
+      x: Math.random() * canvas.width, y: -20 - Math.random() * canvas.height * 0.5,
+      r: 5 + Math.random() * 6, d: 2 + Math.random() * 3,
       color: colors[Math.floor(Math.random() * colors.length)],
-      tilt: Math.random() * 10 - 5,
-      tiltAngle: 0,
-      tiltSpeed: 0.05 + Math.random() * 0.1,
+      tilt: Math.random() * 10 - 5, tiltAngle: 0, tiltSpeed: 0.05 + Math.random() * 0.1,
       shape: Math.random() > 0.5 ? 'circle' : 'rect',
     }));
     let frame = 0;
@@ -828,8 +865,7 @@
         else { ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((p.tilt * Math.PI) / 180); ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r); ctx.restore(); }
         ctx.fill();
         p.y += p.d; p.tiltAngle += p.tiltSpeed;
-        p.tilt = Math.sin(p.tiltAngle) * 12;
-        p.x += Math.sin(p.tiltAngle) * 1.2;
+        p.tilt = Math.sin(p.tiltAngle) * 12; p.x += Math.sin(p.tiltAngle) * 1.2;
         if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
       });
       frame++;
@@ -841,73 +877,25 @@
 
   /* ── Init ────────────────────────────────────────── */
   window.addEventListener('load', () => {
-
-    // Create a tap-to-begin overlay so the first interaction is always deliberate
     const splash = document.createElement('div');
-    splash.style.cssText = `
-      position:fixed; inset:0; z-index:9999; cursor:pointer;
-      display:flex; align-items:center; justify-content:center;
-    `;
-    // invisible — just catches the first tap cleanly
+    splash.style.cssText = 'position:fixed;inset:0;z-index:9999;cursor:pointer;';
     document.body.appendChild(splash);
-
     function begin() {
       splash.remove();
-
-      // Unlock audio on Android/iOS by resuming an AudioContext inside the gesture
-      const ctx = new (window.AudioContext || window.webkitAudioContext)();
-      ctx.resume().then(() => {
-        // create & play a silent buffer — this unlocks the audio engine
-        const buf = ctx.createBuffer(1, 1, 22050);
-        const src = ctx.createBufferSource();
-        src.buffer = buf;
-        src.connect(ctx.destination);
-        src.start(0);
-        // now play BGM — audio is unlocked
+      const actx = new (window.AudioContext || window.webkitAudioContext)();
+      actx.resume().then(() => {
+        const buf = actx.createBuffer(1, 1, 22050);
+        const src = actx.createBufferSource();
+        src.buffer = buf; src.connect(actx.destination); src.start(0);
         bgm.play().catch(() => {});
         bgmStarted = true;
       });
-
       setTimeout(() => showDialogue(0), 300);
     }
-
     splash.addEventListener('touchend', begin, { once: true });
     splash.addEventListener('click',    begin, { once: true });
     document.addEventListener('keydown', begin, { once: true });
   });
-
-  /* ── Background Music ───────────────────────────── */
-  const bgm = new Audio('Audio/bgm.mp3');
-  bgm.loop = true;
-  bgm.volume = 0.10;
-  let bgmStarted = false;
-  function startBgm() {
-    if (bgmStarted) return;
-    bgmStarted = true;
-    bgm.play().catch(() => {});
-  }
-
-  /* ── Talking Sound ───────────────────────────────── */
-  const talkingSfx = new Audio('Audio/talking.mp3');
-  talkingSfx.loop = true;
-  talkingSfx.volume = 0.15;
-  talkingSfx.preload = 'auto';
-
-  /* ── Shake Sound ─────────────────────────────────── */
-  const shakeSfx = new Audio('Audio/shaking.mp3');
-  shakeSfx.volume = 0.3;
-  shakeSfx.preload = 'auto';
-  let shakeTimer = null;
-
-  function playShake() {
-    if (shakeTimer) clearTimeout(shakeTimer);
-    shakeSfx.currentTime = 0;
-    shakeSfx.play().catch(() => {});
-    shakeTimer = setTimeout(() => {
-      shakeSfx.pause();
-      shakeSfx.currentTime = 0;
-    }, 1000);
-  }
 </script>
 </body>
 </html>
