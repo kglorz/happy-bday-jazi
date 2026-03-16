@@ -6,9 +6,7 @@
   <title>Happy Birthday, My Love 💜</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
-    /* ── Reset & Base ─────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
       --lavender:        #b39ddb;
       --lavender-light:  #ede7f6;
@@ -22,12 +20,7 @@
       --text-soft:       #6a3fa6;
       --shadow:          rgba(126, 87, 194, 0.25);
     }
-
-    html, body {
-      width: 100%; height: 100%;
-      overflow-x: hidden;
-    }
-
+    html, body { width: 100%; height: 100%; overflow-x: hidden; }
     body {
       font-family: 'Quicksand', sans-serif;
       background: linear-gradient(135deg, #f3e5f5 0%, #ede7f6 40%, #e8eaf6 100%);
@@ -35,505 +28,171 @@
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
     }
-
-    /* ── Floating Background Elements ─────────────── */
-    #particles {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 0;
-      overflow: hidden;
-    }
-    .floater {
-      position: absolute;
-      opacity: 0;
-      animation: floatSway linear infinite;
-    }
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+    .floater { position: absolute; opacity: 0; animation: floatSway linear infinite; }
     @keyframes floatSway {
-      0%   { transform: translateY(110vh) translateX(0)            rotate(0deg)   scale(0.7); opacity: 0; }
+      0%   { transform: translateY(110vh) translateX(0) rotate(0deg) scale(0.7); opacity: 0; }
       8%   { opacity: 0.85; }
-      50%  { transform: translateY(50vh)  translateX(var(--sway))  rotate(180deg) scale(1);   opacity: 0.75; }
+      50%  { transform: translateY(50vh) translateX(var(--sway)) rotate(180deg) scale(1); opacity: 0.75; }
       92%  { opacity: 0.6; }
-      100% { transform: translateY(-12vh) translateX(0)            rotate(360deg) scale(0.9); opacity: 0; }
+      100% { transform: translateY(-12vh) translateX(0) rotate(360deg) scale(0.9); opacity: 0; }
     }
-
-    /* ── Scene Wrapper ────────────────────────────── */
     #scene {
       position: relative; z-index: 10;
       display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      min-height: 100vh; width: 100%;
-      padding: 2rem;
+      min-height: 100vh; width: 100%; padding: 2rem;
     }
-
-    /* ── Strawberry Character ─────────────────────── */
-    #strawberry-wrap {
-      display: flex; flex-direction: column;
-      align-items: center;
-      transition: all 0.6s ease;
-    }
-
+    #strawberry-wrap { display: flex; flex-direction: column; align-items: center; transition: all 0.6s ease; }
     .strawberry-svg {
       width: 160px; height: auto;
       filter: drop-shadow(0 8px 24px var(--shadow));
       animation: berryBob 2.4s ease-in-out infinite;
       cursor: default;
     }
-    @keyframes berryBob {
-      0%, 100% { transform: translateY(0) rotate(-2deg); }
-      50%       { transform: translateY(-14px) rotate(2deg); }
-    }
-
-    /* eyes blink */
+    @keyframes berryBob { 0%, 100% { transform: translateY(0) rotate(-2deg); } 50% { transform: translateY(-14px) rotate(2deg); } }
     .eye { animation: blink 4s ease-in-out infinite; }
-    @keyframes blink {
-      0%, 90%, 100% { transform: scaleY(1); }
-      95%            { transform: scaleY(0.08); }
-    }
-
-    /* mouth — open/close handled by JS */
+    @keyframes blink { 0%, 90%, 100% { transform: scaleY(1); } 95% { transform: scaleY(0.08); } }
     .berry-mouth { transition: all 0.08s ease; }
-
-    /* ── Speech Bubble ────────────────────────────── */
     #bubble-wrap {
-      position: relative;
-      margin-bottom: 10px;
-      opacity: 0;
-      transform: translateY(10px) scale(0.9);
+      position: relative; margin-bottom: 10px;
+      opacity: 0; transform: translateY(10px) scale(0.9);
       transition: opacity 0.5s ease, transform 0.5s ease;
     }
-    #bubble-wrap.show {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
-
+    #bubble-wrap.show { opacity: 1; transform: translateY(0) scale(1); }
     #bubble {
-      background: var(--white);
-      border: 2.5px solid var(--lavender);
-      border-radius: 24px;
-      padding: 18px 26px;
-      max-width: 340px;
-      min-width: 200px;
-      text-align: center;
-      font-size: 1rem;
-      line-height: 1.6;
+      background: var(--white); border: 2.5px solid var(--lavender);
+      border-radius: 24px; padding: 18px 26px;
+      max-width: 340px; min-width: 200px;
+      text-align: center; font-size: 1rem; line-height: 1.6;
       color: var(--text-dark);
       box-shadow: 0 6px 28px var(--shadow), inset 0 1px 0 rgba(255,255,255,0.8);
       position: relative;
     }
-    /* tail */
-    #bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -16px; left: 50%;
-      transform: translateX(-50%);
-      border: 8px solid transparent;
-      border-top-color: var(--lavender);
-    }
-    #bubble::before {
-      content: '';
-      position: absolute;
-      bottom: -12px; left: 50%;
-      transform: translateX(-50%);
-      border: 7px solid transparent;
-      border-top-color: var(--white);
-      z-index: 1;
-    }
-
-    #bubble-text {
-      min-height: 1.6em;
-    }
-
-    /* cursor blink */
-    .cursor {
-      display: inline-block;
-      width: 2px; height: 1em;
-      background: var(--lavender-deep);
-      margin-left: 2px;
-      vertical-align: middle;
-      animation: cursorBlink 0.7s steps(1) infinite;
-    }
+    #bubble::after { content: ''; position: absolute; bottom: -16px; left: 50%; transform: translateX(-50%); border: 8px solid transparent; border-top-color: var(--lavender); }
+    #bubble::before { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); border: 7px solid transparent; border-top-color: var(--white); z-index: 1; }
+    #bubble-text { min-height: 1.6em; }
+    .cursor { display: inline-block; width: 2px; height: 1em; background: var(--lavender-deep); margin-left: 2px; vertical-align: middle; animation: cursorBlink 0.7s steps(1) infinite; }
     @keyframes cursorBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-    /* ── Next Button ──────────────────────────────── */
     #next-btn {
-      display: block;
-      margin: 32px auto 0;
-      padding: 14px 40px;
+      display: block; margin: 32px auto 0; padding: 14px 40px;
       background: linear-gradient(135deg, var(--lavender-deep), var(--lavender-dark));
-      color: #fff;
-      border: none;
-      border-radius: 50px;
-      font-family: 'Quicksand', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      letter-spacing: 0.04em;
+      color: #fff; border: none; border-radius: 50px;
+      font-family: 'Quicksand', sans-serif; font-size: 1rem; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.04em;
       box-shadow: 0 6px 24px var(--shadow);
       transition: transform 0.2s, box-shadow 0.2s;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(8px);
+      opacity: 0; pointer-events: none; transform: translateY(8px);
     }
-    #next-btn.show {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-      transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s, box-shadow 0.2s, background 0.2s;
-    }
-    #next-btn:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 32px var(--shadow);
-    }
-
-    /* ── Gift Box ─────────────────────────────────── */
-    #gift-scene {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      width: 100%;
-      animation: fadeIn 0.8s ease forwards;
-    }
+    #next-btn.show { opacity: 1; pointer-events: auto; transform: translateY(0); transition: opacity 0.5s ease 0.2s, transform 0.5s ease 0.2s, box-shadow 0.2s, background 0.2s; }
+    #next-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 32px var(--shadow); }
+    #gift-scene { display: none; flex-direction: column; align-items: center; width: 100%; animation: fadeIn 0.8s ease forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
-
-    #gift-box-wrap {
-      cursor: pointer;
-      display: flex; flex-direction: column;
-      align-items: center;
-      transition: transform 0.3s;
-    }
+    #gift-box-wrap { cursor: pointer; display: flex; flex-direction: column; align-items: center; transition: transform 0.3s; }
     #gift-box-wrap:hover { transform: scale(1.05); }
     #gift-box-wrap.open { animation: boxShake 0.5s ease; }
-    @keyframes boxShake {
-      0%,100% { transform: rotate(0); }
-      20%      { transform: rotate(-5deg) scale(1.05); }
-      40%      { transform: rotate(5deg) scale(1.08); }
-      60%      { transform: rotate(-3deg); }
-      80%      { transform: rotate(3deg); }
-    }
-
+    @keyframes boxShake { 0%,100% { transform: rotate(0); } 20% { transform: rotate(-5deg) scale(1.05); } 40% { transform: rotate(5deg) scale(1.08); } 60% { transform: rotate(-3deg); } 80% { transform: rotate(3deg); } }
     .gift-svg { width: 200px; filter: drop-shadow(0 12px 32px var(--shadow)); }
-
-    #tap-hint {
-      margin-top: 14px;
-      font-size: 0.9rem; color: var(--text-soft);
-      letter-spacing: 0.05em;
-      animation: pulse 1.8s ease-in-out infinite;
-    }
+    #tap-hint { margin-top: 14px; font-size: 0.9rem; color: var(--text-soft); letter-spacing: 0.05em; animation: pulse 1.8s ease-in-out infinite; }
     @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    /* ── Letter Modal ─────────────────────────────── */
     #letter-overlay {
-      display: none;
-      position: fixed; inset: 0; z-index: 100;
-      background: rgba(69, 39, 160, 0.35);
-      backdrop-filter: blur(6px);
-      justify-content: center; align-items: center;
-      padding: 1rem;
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(69, 39, 160, 0.35); backdrop-filter: blur(6px);
+      justify-content: center; align-items: center; padding: 1rem;
       animation: fadeIn 0.4s ease forwards;
     }
     #letter-overlay.open { display: flex; }
-
     #letter-card {
       background: linear-gradient(160deg, #fff 0%, #f3e5f5 100%);
-      border: 2px solid var(--lavender-mid);
-      border-radius: 28px;
-      max-width: 680px; width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      padding: 3rem 2.5rem;
-      box-shadow: 0 20px 80px rgba(69, 39, 160, 0.3);
-      position: relative;
-      scrollbar-width: thin;
-      scrollbar-color: var(--lavender) transparent;
+      border: 2px solid var(--lavender-mid); border-radius: 28px;
+      max-width: 680px; width: 100%; max-height: 90vh; overflow-y: auto;
+      padding: 3rem 2.5rem; box-shadow: 0 20px 80px rgba(69, 39, 160, 0.3);
+      position: relative; scrollbar-width: thin; scrollbar-color: var(--lavender) transparent;
     }
-
-    #close-btn {
-      position: absolute; top: 18px; right: 22px;
-      background: none; border: none;
-      font-size: 1.6rem; cursor: pointer;
-      color: var(--lavender-deep);
-      transition: transform 0.2s;
-      line-height: 1;
-    }
+    #close-btn { position: absolute; top: 18px; right: 22px; background: none; border: none; font-size: 1.6rem; cursor: pointer; color: var(--lavender-deep); transition: transform 0.2s; line-height: 1; }
     #close-btn:hover { transform: scale(1.3) rotate(90deg); }
-
-    .letter-header {
-      text-align: center; margin-bottom: 2rem;
+    .letter-header { text-align: center; margin-bottom: 2rem; }
+    .letter-header h1 { font-family: 'Playfair Display', serif; font-size: 2.2rem; color: var(--lavender-dark); margin-bottom: 0.4rem; }
+    .letter-header .subtitle { font-size: 0.95rem; color: var(--text-soft); letter-spacing: 0.08em; text-transform: uppercase; }
+    .letter-divider { height: 2px; background: linear-gradient(90deg, transparent, var(--lavender-mid), transparent); margin: 1.5rem 0; }
+    .letter-body { font-size: 1.05rem; line-height: 1.9; color: var(--text-dark); white-space: pre-line; }
+    #photo-stack-overlay {
+      display: none; position: fixed; inset: 0; z-index: 100;
+      background: rgba(69, 39, 160, 0.45); backdrop-filter: blur(8px);
+      flex-direction: column; align-items: center; justify-content: center; padding: 1rem;
     }
-    .letter-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
-      color: var(--lavender-dark);
-      margin-bottom: 0.4rem;
+    #photo-stack-overlay.open { display: flex; }
+    #photo-stack { position: relative; width: 260px; height: 300px; }
+    .polaroid {
+      position: absolute; top: 0; left: 0; width: 240px;
+      background: #fff; border-radius: 4px; padding: 12px 12px 48px 12px;
+      box-shadow: 0 8px 32px rgba(69,39,160,0.3), 0 2px 8px rgba(0,0,0,0.15);
+      opacity: 0; transform: translateY(60px) scale(0.85); transition: none; cursor: default;
     }
-    .letter-header .subtitle {
-      font-size: 0.95rem; color: var(--text-soft);
-      letter-spacing: 0.08em; text-transform: uppercase;
+    .polaroid.landed { opacity: 1; transform: none; transition: none; }
+    .polaroid.fly-in { animation: polaroidFlyIn 0.55s cubic-bezier(.22,1,.36,1) forwards; }
+    @keyframes polaroidFlyIn {
+      0%   { opacity: 0; transform: translateY(80px) scale(0.75) rotate(var(--rot)); }
+      60%  { opacity: 1; transform: translateY(-12px) scale(1.04) rotate(var(--rot)); }
+      100% { opacity: 1; transform: translateY(0) scale(1) rotate(var(--rot)); }
     }
-
-    .letter-divider {
-      height: 2px;
-      background: linear-gradient(90deg, transparent, var(--lavender-mid), transparent);
-      margin: 1.5rem 0;
-    }
-
-    .letter-body {
-      font-size: 1.05rem; line-height: 1.9;
-      color: var(--text-dark);
-      white-space: pre-line;
-    }
-
-    /* ── Photo Grid ───────────────────────────────── */
-    .photo-section { margin-top: 2.5rem; }
-    .photo-section h2 {
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.4rem;
-      color: var(--lavender-deep);
-      text-align: center;
-      margin-bottom: 1.2rem;
-    }
-
-    .photo-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 14px;
-    }
-
-    .photo-frame {
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      overflow: hidden;
-      border: 3px solid var(--lavender-mid);
-      box-shadow: 0 6px 20px var(--shadow);
-      background: var(--lavender-light);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      color: var(--text-soft);
-      font-size: 0.82rem;
-      text-align: center;
-      padding: 1rem;
-      transition: transform 0.3s, box-shadow 0.3s;
-      position: relative;
-      cursor: pointer;
-    }
-    .photo-frame:hover {
-      transform: translateY(-4px) rotate(1deg);
-      box-shadow: 0 14px 36px var(--shadow);
-    }
-    .photo-frame img {
-      position: absolute; inset: 0;
-      width: 100%; height: 100%;
-      object-fit: cover;
-      display: none;
-    }
-    .photo-frame img.loaded { display: block; }
-    .photo-frame .placeholder-icon { font-size: 2.2rem; margin-bottom: 6px; }
-    .photo-frame .placeholder-label { font-size: 0.75rem; opacity: 0.7; }
-
-    .letter-footer {
-      text-align: center; margin-top: 2.5rem;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--lavender-deep);
-    }
-
-    /* ── Confetti Canvas ──────────────────────────── */
-    #confetti-canvas {
-      position: fixed; inset: 0;
-      pointer-events: none; z-index: 50;
-    }
-
-    /* lid lift stages */
-    @keyframes lidLift1 {
-      0%   { transform: translateY(0)   rotate(0deg);   opacity: 1; }
-      100% { transform: translateY(-18px) rotate(-6deg); opacity: 1; }
-    }
-    @keyframes lidLift2 {
-      0%   { transform: translateY(-18px) rotate(-6deg); }
-      100% { transform: translateY(-36px) rotate(-12deg); }
-    }
-    @keyframes lidLift3 {
-      0%   { transform: translateY(-36px) rotate(-12deg); opacity: 1; }
-      100% { transform: translateY(-80px) rotate(-20deg); opacity: 0; }
-    }
+    .polaroid-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; background: var(--lavender-light); display: flex; align-items: center; justify-content: center; color: var(--text-soft); font-size: 0.8rem; text-align: center; overflow: hidden; border-radius: 2px; }
+    .polaroid-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .polaroid-placeholder { width: 100%; aspect-ratio: 1 / 1; background: var(--lavender-light); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--text-soft); border-radius: 2px; gap: 6px; }
+    .polaroid-placeholder span:first-child { font-size: 2rem; }
+    .polaroid-placeholder span:last-child { font-size: 0.72rem; opacity: 0.7; }
+    .polaroid-caption { margin-top: 8px; font-family: 'Quicksand', sans-serif; font-size: 0.82rem; color: #555; text-align: center; min-height: 1.2em; line-height: 1.4; padding: 0 4px; }
+    #photo-tap-hint { margin-top: 28px; font-size: 0.88rem; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; animation: pulse 1.8s ease-in-out infinite; text-align: center; }
+    #photo-counter { margin-top: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.55); letter-spacing: 0.05em; }
+    .letter-footer { text-align: center; margin-top: 2.5rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; color: var(--lavender-deep); }
+    #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
+    @keyframes lidLift1 { 0% { transform: translateY(0) rotate(0deg); opacity: 1; } 100% { transform: translateY(-18px) rotate(-6deg); opacity: 1; } }
+    @keyframes lidLift2 { 0% { transform: translateY(-18px) rotate(-6deg); } 100% { transform: translateY(-36px) rotate(-12deg); } }
+    @keyframes lidLift3 { 0% { transform: translateY(-36px) rotate(-12deg); opacity: 1; } 100% { transform: translateY(-80px) rotate(-20deg); opacity: 0; } }
     #gift-lid-group { transform-origin: 100px 90px; transition: none; }
     #gift-lid-group.lift1 { animation: lidLift1 0.4s ease forwards; }
     #gift-lid-group.lift2 { animation: lidLift2 0.4s ease forwards; }
     #gift-lid-group.lift3 { animation: lidLift3 0.45s ease forwards; }
-
-    /* ── Gift scene layout wrapper ───────────────── */
-    #gift-scene-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 28px;
-    }
-
-    /* ── "I Love You" — fixed to screen corners/top ── */
-    #ily-display {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 30;
-    }
+    #gift-scene-inner { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+    #ily-display { position: fixed; inset: 0; pointer-events: none; z-index: 30; }
     .ily-word {
-      position: fixed;
-      font-family: 'Playfair Display', serif;
-      font-style: italic;
-      color: var(--lavender-dark);
-      text-shadow: 0 3px 20px rgba(126,87,194,0.5);
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      /* start position: centre of screen (where the box is) */
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%) scale(0.4);
-      transition: opacity 0.7s cubic-bezier(.22,1,.36,1),
-                  top    0.7s cubic-bezier(.22,1,.36,1),
-                  left   0.7s cubic-bezier(.22,1,.36,1),
-                  transform 0.7s cubic-bezier(.22,1,.36,1);
+      position: fixed; font-family: 'Playfair Display', serif; font-style: italic;
+      color: var(--lavender-dark); text-shadow: 0 3px 20px rgba(126,87,194,0.5);
+      white-space: nowrap; opacity: 0; pointer-events: none;
+      top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.4);
+      transition: opacity 0.7s cubic-bezier(.22,1,.36,1), top 0.7s cubic-bezier(.22,1,.36,1), left 0.7s cubic-bezier(.22,1,.36,1), transform 0.7s cubic-bezier(.22,1,.36,1);
     }
     #word-i    { font-size: 4rem; transition-delay: 0s; }
     #word-love { font-size: 3.2rem; transition-delay: 0s; }
     #word-you  { font-size: 4rem; transition-delay: 0s; }
-
-    /* final resting positions */
-    #word-i.visible {
-      opacity: 1;
-      top: 6vh; left: 5vw;
-      transform: translate(0, 0) scale(1);
-      animation: ilyFloat 3.2s ease-in-out 0.7s infinite;
-    }
-    #word-love.visible {
-      opacity: 1;
-      top: 5vh; left: 50%;
-      transform: translateX(-50%) scale(1);
-      animation: ilyFloatCenter 3.2s ease-in-out 1s infinite;
-    }
-    #word-you.visible {
-      opacity: 1;
-      top: 6vh; right: 5vw; left: auto;
-      transform: translate(0, 0) scale(1);
-      animation: ilyFloat 3.2s ease-in-out 0.85s infinite;
-    }
-    @keyframes ilyFloat {
-      0%,100% { transform: translate(0,0) scale(1); }
-      50%      { transform: translate(0,-10px) scale(1); }
-    }
-    @keyframes ilyFloatCenter {
-      0%,100% { transform: translateX(-50%) translateY(0) scale(1); }
-      50%      { transform: translateX(-50%) translateY(-10px) scale(1); }
-    }
-
-    /* ── Mini Strawberry — horizontal row below the gift ── */
-    #mini-berry-wrap {
-      display: none;
-      flex-direction: row;
-      align-items: center;
-      gap: 12px;
-      z-index: 20;
-    }
+    #word-i.visible    { opacity: 1; top: 6vh; left: 5vw; transform: translate(0, 0) scale(1); animation: ilyFloat 3.2s ease-in-out 0.7s infinite; }
+    #word-love.visible { opacity: 1; top: 5vh; left: 50%; transform: translateX(-50%) scale(1); animation: ilyFloatCenter 3.2s ease-in-out 1s infinite; }
+    #word-you.visible  { opacity: 1; top: 6vh; right: 5vw; left: auto; transform: translate(0, 0) scale(1); animation: ilyFloat 3.2s ease-in-out 0.85s infinite; }
+    @keyframes ilyFloat { 0%,100% { transform: translate(0,0) scale(1); } 50% { transform: translate(0,-10px) scale(1); } }
+    @keyframes ilyFloatCenter { 0%,100% { transform: translateX(-50%) translateY(0) scale(1); } 50% { transform: translateX(-50%) translateY(-10px) scale(1); } }
+    #mini-berry-wrap { display: none; flex-direction: row; align-items: center; gap: 12px; z-index: 20; }
     #mini-berry-wrap.show { display: flex; }
-
-    .mini-berry-svg {
-      width: 64px; height: auto;
-      flex-shrink: 0;
-      filter: drop-shadow(0 4px 12px var(--shadow));
-      animation: berryBob 2.4s ease-in-out infinite;
-    }
+    .mini-berry-svg { width: 64px; height: auto; flex-shrink: 0; filter: drop-shadow(0 4px 12px var(--shadow)); animation: berryBob 2.4s ease-in-out infinite; }
     .mini-eye { animation: blink 4s ease-in-out infinite; }
-
-    #mini-bubble-wrap {
-      opacity: 0;
-      transform: translateX(-8px) scale(0.9);
-      transition: opacity 0.4s ease, transform 0.4s ease;
-      max-width: 220px;
-    }
-    #mini-bubble-wrap.show {
-      opacity: 1;
-      transform: translateX(0) scale(1);
-    }
-    #mini-bubble {
-      background: var(--white);
-      border: 2px solid var(--lavender);
-      border-radius: 14px;
-      padding: 9px 13px;
-      font-size: 0.82rem;
-      line-height: 1.5;
-      color: var(--text-dark);
-      box-shadow: 0 4px 16px var(--shadow);
-      position: relative;
-    }
-    /* tail points LEFT toward the strawberry */
-    #mini-bubble::after {
-      content: '';
-      position: absolute;
-      top: 50%; left: -12px;
-      transform: translateY(-50%);
-      border: 6px solid transparent;
-      border-right-color: var(--lavender);
-    }
-    #mini-bubble::before {
-      content: '';
-      position: absolute;
-      top: 50%; left: -9px;
-      transform: translateY(-50%);
-      border: 5px solid transparent;
-      border-right-color: var(--white);
-      z-index: 1;
-    }
-
-    /* ── Big letter (replaces box after opened) ──────── */
-    #big-letter-wrap {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 14px;
-      cursor: pointer;
-      animation: fadeInUp 0.6s cubic-bezier(.22,1,.36,1) forwards;
-    }
-    #big-letter-wrap.show { display: flex; }
-    #big-letter-wrap:hover #big-letter {
-      filter: drop-shadow(0 8px 28px rgba(126,87,194,0.5));
-      transform: translateY(-6px) rotate(-1deg);
-    }
-    #big-letter {
-      filter: drop-shadow(0 6px 20px rgba(126,87,194,0.3));
-      transition: filter 0.3s ease, transform 0.3s ease;
-      animation: letterFloat 3s ease-in-out infinite;
-    }
-    @keyframes letterFloat {
-      0%,100% { transform: translateY(0) rotate(0deg); }
-      50%      { transform: translateY(-10px) rotate(1deg); }
-    }
-    @keyframes fadeInUp {
-      from { opacity: 0; transform: translateY(30px) scale(0.85); }
-      to   { opacity: 1; transform: translateY(0)    scale(1); }
-    }
-    #letter-hint {
-      font-size: 0.9rem;
-      color: var(--text-soft);
-      letter-spacing: 0.05em;
-      animation: pulse 1.8s ease-in-out infinite;
-    }
-    @keyframes giftBump {
-      0%,100% { transform: scale(1) rotate(0deg); }
-      25%      { transform: scale(1.08) rotate(-4deg); }
-      75%      { transform: scale(1.08) rotate(4deg); }
-    }
+    #mini-bubble-wrap { opacity: 0; transform: translateX(-8px) scale(0.9); transition: opacity 0.4s ease, transform 0.4s ease; max-width: 220px; }
+    #mini-bubble-wrap.show { opacity: 1; transform: translateX(0) scale(1); }
+    #mini-bubble { background: var(--white); border: 2px solid var(--lavender); border-radius: 14px; padding: 9px 13px; font-size: 0.82rem; line-height: 1.5; color: var(--text-dark); box-shadow: 0 4px 16px var(--shadow); position: relative; }
+    #mini-bubble::after { content: ''; position: absolute; top: 50%; left: -12px; transform: translateY(-50%); border: 6px solid transparent; border-right-color: var(--lavender); }
+    #mini-bubble::before { content: ''; position: absolute; top: 50%; left: -9px; transform: translateY(-50%); border: 5px solid transparent; border-right-color: var(--white); z-index: 1; }
+    #open-shelf { display: none; flex-direction: row; align-items: flex-end; justify-content: center; gap: 32px; animation: fadeInUp 0.6s cubic-bezier(.22,1,.36,1) forwards; }
+    #open-shelf.show { display: flex; }
+    .shelf-item { display: flex; flex-direction: column; align-items: center; gap: 10px; cursor: pointer; }
+    .shelf-item svg, .shelf-item > svg { filter: drop-shadow(0 6px 18px rgba(126,87,194,0.28)); transition: filter 0.3s ease, transform 0.3s ease; animation: letterFloat 3s ease-in-out infinite; }
+    #shelf-photos svg { animation-delay: 0.3s; }
+    #shelf-letter svg { animation-delay: 0s; }
+    .shelf-item:hover svg { filter: drop-shadow(0 10px 28px rgba(126,87,194,0.5)); transform: translateY(-6px) rotate(-1deg); animation: none; }
+    .shelf-hint { font-size: 0.82rem; color: var(--text-soft); letter-spacing: 0.04em; animation: pulse 1.8s ease-in-out infinite; }
+    @keyframes letterFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    @keyframes giftBump { 0%,100% { transform: scale(1) rotate(0deg); } 25% { transform: scale(1.08) rotate(-4deg); } 75% { transform: scale(1.08) rotate(4deg); } }
     .gift-bump { animation: giftBump 0.35s ease; }
-
-    @keyframes giftWiggle {
-      0%,100% { transform: scale(1) rotate(0deg); }
-      20%      { transform: scale(1.12) rotate(-6deg); }
-      40%      { transform: scale(1.12) rotate(6deg); }
-      60%      { transform: scale(1.1)  rotate(-4deg); }
-      80%      { transform: scale(1.1)  rotate(4deg); }
-    }
+    @keyframes giftWiggle { 0%,100% { transform: scale(1) rotate(0deg); } 20% { transform: scale(1.12) rotate(-6deg); } 40% { transform: scale(1.12) rotate(6deg); } 60% { transform: scale(1.1) rotate(-4deg); } 80% { transform: scale(1.1) rotate(4deg); } }
     .gift-wiggle { animation: giftWiggle 0.5s ease; }
-
-    /* ── Responsive ───────────────────────────────── */
     @media (max-width: 480px) {
       .strawberry-svg { width: 120px; }
       #bubble { font-size: 0.92rem; max-width: 280px; }
@@ -544,25 +203,17 @@
 </head>
 <body>
 
-<!-- Particles -->
 <div id="particles"></div>
-
-<!-- Confetti -->
 <canvas id="confetti-canvas"></canvas>
 
-<!-- Main Scene -->
 <div id="scene">
 
-  <!-- Dialogue phase -->
   <div id="dialogue-phase">
     <div id="bubble-wrap">
       <div id="bubble"><span id="bubble-text"></span><span class="cursor" id="cursor"></span></div>
     </div>
-
     <div id="strawberry-wrap">
-      <!-- Strawberry SVG character -->
       <svg class="strawberry-svg" id="berry-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
-        <!-- leaves -->
         <g>
           <ellipse cx="80" cy="38" rx="12" ry="22" fill="#66bb6a" transform="rotate(-20 80 38)"/>
           <ellipse cx="80" cy="38" rx="12" ry="22" fill="#81c784" transform="rotate(0 80 38)"/>
@@ -570,12 +221,8 @@
           <ellipse cx="80" cy="38" rx="8" ry="16" fill="#a5d6a7" transform="rotate(-10 80 38)"/>
           <ellipse cx="80" cy="38" rx="8" ry="16" fill="#a5d6a7" transform="rotate(10 80 38)"/>
         </g>
-        <!-- body -->
-        <path d="M30,70 Q20,110 40,145 Q60,180 80,185 Q100,180 120,145 Q140,110 130,70 Q110,52 80,52 Q50,52 30,70 Z"
-              fill="#e53935"/>
-        <!-- shine -->
+        <path d="M30,70 Q20,110 40,145 Q60,180 80,185 Q100,180 120,145 Q140,110 130,70 Q110,52 80,52 Q50,52 30,70 Z" fill="#e53935"/>
         <ellipse cx="60" cy="90" rx="10" ry="14" fill="rgba(255,255,255,0.2)" transform="rotate(-15 60 90)"/>
-        <!-- seeds -->
         <g fill="#ffcc80" opacity="0.85">
           <ellipse cx="65"  cy="85"  rx="3.5" ry="5" transform="rotate(-10 65 85)"/>
           <ellipse cx="95"  cy="85"  rx="3.5" ry="5" transform="rotate(10 95 85)"/>
@@ -586,7 +233,6 @@
           <ellipse cx="90"  cy="140" rx="3.5" ry="5" transform="rotate(5 90 140)"/>
           <ellipse cx="75"  cy="162" rx="3"   ry="4"/>
         </g>
-        <!-- face: eyes -->
         <g class="eye" style="transform-origin:67px 100px">
           <ellipse cx="67" cy="100" rx="6" ry="7" fill="#1a1a2e"/>
           <circle  cx="69" cy="98"  r="2"  fill="#fff"/>
@@ -595,43 +241,30 @@
           <ellipse cx="93" cy="100" rx="6" ry="7" fill="#1a1a2e"/>
           <circle  cx="95" cy="98"  r="2"  fill="#fff"/>
         </g>
-        <!-- cheeks -->
         <ellipse cx="55" cy="115" rx="8" ry="5" fill="#f06292" opacity="0.4"/>
         <ellipse cx="105" cy="115" rx="8" ry="5" fill="#f06292" opacity="0.4"/>
-        <!-- mouth: two states toggled by JS -->
         <g id="mouth-group">
-          <!-- closed smile (shown when silent) -->
-          <path id="mouth-smile"
-                d="M68,122 Q80,132 92,122"
-                fill="none" stroke="#1a1a2e" stroke-width="2.8"
-                stroke-linecap="round"/>
-          <!-- open mouth (shown when talking) -->
+          <path id="mouth-smile" d="M68,122 Q80,132 92,122" fill="none" stroke="#1a1a2e" stroke-width="2.8" stroke-linecap="round"/>
           <g id="mouth-open" style="display:none">
             <ellipse cx="80" cy="125" rx="10" ry="7" fill="#1a1a2e"/>
-            <ellipse cx="80" cy="122" rx="10" ry="4" fill="#e53935"/><!-- gum top matches body -->
-            <ellipse cx="80" cy="128" rx="8"  ry="3" fill="#f8bbd0"/><!-- tongue -->
+            <ellipse cx="80" cy="122" rx="10" ry="4" fill="#e53935"/>
+            <ellipse cx="80" cy="128" rx="8"  ry="3" fill="#f8bbd0"/>
           </g>
         </g>
       </svg>
     </div>
-
     <button id="next-btn">Continue ✨</button>
   </div>
 
-  <!-- ILY words — fixed to screen, outside all layout -->
   <div id="ily-display">
     <span class="ily-word" id="word-i">I</span>
     <span class="ily-word" id="word-love">Love</span>
     <span class="ily-word" id="word-you">You</span>
   </div>
 
-  <!-- Gift phase -->
   <div id="gift-scene">
-
-    <!-- Gift box + mini strawberry below -->
     <div id="gift-scene-inner">
 
-      <!-- The gift box (shown during 3-click phase) -->
       <div id="gift-box-wrap" onclick="handleGiftClick()">
         <svg class="gift-svg" id="gift-svg" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
           <rect x="20" y="90" width="160" height="110" rx="6" fill="#b39ddb"/>
@@ -653,50 +286,50 @@
         <div id="tap-hint">💜 tap to open your gift 💜</div>
       </div>
 
-      <!-- Big letter icon — replaces the box after it's opened -->
-      <div id="big-letter-wrap">
-        <svg id="big-letter" width="160" height="196" viewBox="0 0 160 196" xmlns="http://www.w3.org/2000/svg">
-          <!-- paper shadow -->
-          <rect x="18" y="14" width="128" height="172" rx="10" fill="rgba(179,157,219,0.25)"/>
-          <!-- paper body -->
-          <rect x="12" y="8" width="136" height="172" rx="10" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2.5"/>
-          <!-- dog-ear fold top-right -->
-          <path d="M112,8 L148,44 L112,44 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="2" stroke-linejoin="round"/>
-          <line x1="112" y1="8" x2="112" y2="44" stroke="#d1c4e9" stroke-width="1.5"/>
-          <!-- ruled lines -->
-          <line x1="30" y1="66"  x2="130" y2="66"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="82"  x2="130" y2="82"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="98"  x2="130" y2="98"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="114" x2="130" y2="114" stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
-          <line x1="30" y1="130" x2="100" y2="130" stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
-          <!-- small cake doodle -->
-          <g transform="translate(54, 138) scale(0.9)">
-            <!-- candle -->
-            <rect x="25" y="0" width="5" height="9" rx="1.5" fill="#f8bbd0"/>
-            <!-- flame -->
-            <ellipse cx="27.5" cy="0" rx="2.2" ry="3" fill="#ffcc80"/>
-            <ellipse cx="27.5" cy="-0.5" rx="1" ry="1.7" fill="#fff9c4" opacity="0.9"/>
-            <!-- top tier -->
-            <rect x="10" y="9" width="35" height="11" rx="3.5" fill="#ce93d8"/>
-            <path d="M10,14 Q13,19 16,14 Q19,19 22,14 Q25,19 28,14 Q31,19 34,14 Q37,19 45,14" fill="none" stroke="#f3e5f5" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- bottom tier -->
-            <rect x="3" y="20" width="49" height="13" rx="3.5" fill="#b39ddb"/>
-            <path d="M3,26 Q7,32 11,26 Q15,32 19,26 Q23,32 27,26 Q31,32 35,26 Q39,32 43,26 Q47,32 52,26" fill="none" stroke="#e1bee7" stroke-width="2.5" stroke-linecap="round"/>
-            <!-- plate -->
-            <ellipse cx="27.5" cy="33" rx="26" ry="3.5" fill="#9575cd" opacity="0.55"/>
-            <!-- dots -->
-            <circle cx="20" cy="25" r="1.8" fill="#f48fb1" opacity="0.85"/>
-            <circle cx="27.5" cy="23" r="1.8" fill="#fff9c4" opacity="0.85"/>
-            <circle cx="35" cy="25" r="1.8" fill="#f48fb1" opacity="0.85"/>
-          </g>
-          <!-- sparkles -->
-          <text x="130" y="168" font-size="16" fill="#ce93d8" opacity="0.7">✦</text>
-          <text x="20"  y="52"  font-size="12" fill="#b39ddb" opacity="0.6">✦</text>
-        </svg>
-        <div id="letter-hint">💜 tap to read again 💜</div>
+      <div id="open-shelf">
+        <div id="shelf-photos" class="shelf-item">
+          <svg width="110" height="130" viewBox="0 0 110 130" xmlns="http://www.w3.org/2000/svg">
+            <rect x="18" y="14" width="80" height="100" rx="4" fill="#e1bee7" stroke="#ce93d8" stroke-width="1.5" transform="rotate(-7 58 64)"/>
+            <rect x="15" y="10" width="80" height="100" rx="4" fill="#f3e5f5" stroke="#ce93d8" stroke-width="1.5" transform="rotate(4 55 60)"/>
+            <rect x="14" y="8" width="80" height="100" rx="4" fill="#fff" stroke="#d1c4e9" stroke-width="2"/>
+            <rect x="20" y="14" width="68" height="68" rx="2" fill="#ede7f6"/>
+            <text x="54" y="55" font-size="22" text-anchor="middle" fill="#b39ddb">📷</text>
+            <line x1="26" y1="94" x2="82" y2="94" stroke="#e1bee7" stroke-width="1.5" stroke-linecap="round"/>
+            <line x1="32" y1="102" x2="76" y2="102" stroke="#e1bee7" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <div class="shelf-hint">our memories 📷</div>
+        </div>
+        <div id="shelf-letter" class="shelf-item">
+          <svg id="big-letter" width="110" height="130" viewBox="0 0 160 196" xmlns="http://www.w3.org/2000/svg">
+            <rect x="18" y="14" width="128" height="172" rx="10" fill="rgba(179,157,219,0.25)"/>
+            <rect x="12" y="8" width="136" height="172" rx="10" fill="#faf5ff" stroke="#d1c4e9" stroke-width="2.5"/>
+            <path d="M112,8 L148,44 L112,44 Z" fill="#e8d5f5" stroke="#d1c4e9" stroke-width="2" stroke-linejoin="round"/>
+            <line x1="112" y1="8" x2="112" y2="44" stroke="#d1c4e9" stroke-width="1.5"/>
+            <line x1="30" y1="66"  x2="130" y2="66"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+            <line x1="30" y1="82"  x2="130" y2="82"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+            <line x1="30" y1="98"  x2="130" y2="98"  stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+            <line x1="30" y1="114" x2="130" y2="114" stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+            <line x1="30" y1="130" x2="100" y2="130" stroke="#e1bee7" stroke-width="2" stroke-linecap="round"/>
+            <g transform="translate(54, 138) scale(0.9)">
+              <rect x="25" y="0" width="5" height="9" rx="1.5" fill="#f8bbd0"/>
+              <ellipse cx="27.5" cy="0" rx="2.2" ry="3" fill="#ffcc80"/>
+              <ellipse cx="27.5" cy="-0.5" rx="1" ry="1.7" fill="#fff9c4" opacity="0.9"/>
+              <rect x="10" y="9" width="35" height="11" rx="3.5" fill="#ce93d8"/>
+              <path d="M10,14 Q13,19 16,14 Q19,19 22,14 Q25,19 28,14 Q31,19 34,14 Q37,19 45,14" fill="none" stroke="#f3e5f5" stroke-width="2.5" stroke-linecap="round"/>
+              <rect x="3" y="20" width="49" height="13" rx="3.5" fill="#b39ddb"/>
+              <path d="M3,26 Q7,32 11,26 Q15,32 19,26 Q23,32 27,26 Q31,32 35,26 Q39,32 43,26 Q47,32 52,26" fill="none" stroke="#e1bee7" stroke-width="2.5" stroke-linecap="round"/>
+              <ellipse cx="27.5" cy="33" rx="26" ry="3.5" fill="#9575cd" opacity="0.55"/>
+              <circle cx="20" cy="25" r="1.8" fill="#f48fb1" opacity="0.85"/>
+              <circle cx="27.5" cy="23" r="1.8" fill="#fff9c4" opacity="0.85"/>
+              <circle cx="35" cy="25" r="1.8" fill="#f48fb1" opacity="0.85"/>
+            </g>
+            <text x="130" y="168" font-size="16" fill="#ce93d8" opacity="0.7">✦</text>
+            <text x="20"  y="52"  font-size="12" fill="#b39ddb" opacity="0.6">✦</text>
+          </svg>
+          <div class="shelf-hint">read the letter 💜</div>
+        </div>
       </div>
 
-      <!-- Mini strawberry: berry on left, bubble on right -->
       <div id="mini-berry-wrap">
         <svg id="mini-berry-svg" class="mini-berry-svg" viewBox="0 0 160 200" xmlns="http://www.w3.org/2000/svg">
           <g>
@@ -743,27 +376,24 @@
       </div>
 
     </div>
-
   </div>
 
 </div>
 
-<!-- Letter Overlay -->
+<div id="photo-stack-overlay">
+  <div id="photo-stack"></div>
+  <div id="photo-tap-hint">tap to reveal our memories 📷</div>
+  <div id="photo-counter"></div>
+</div>
+
 <div id="letter-overlay">
   <div id="letter-card">
     <button id="close-btn" onclick="closeLetter()" title="Close">×</button>
-
     <div class="letter-header">
-      <h1>Happy Birthday, My Love 🍓</h1>
-      <div class="subtitle">a little something, just for you</div>
+      <h1>Happy Birthday, Jazi 🍓</h1>
+      <div class="subtitle">to you whom I love most</div>
     </div>
     <div class="letter-divider"></div>
-
-    <!--
-      ✏️ EDIT YOUR MESSAGE BELOW
-      Replace the text between the <p> tags with your own sweet message.
-      You can add more <p> tags for more paragraphs.
-    -->
     <div class="letter-body">
       <p>Hey you,</p>
       <br>
@@ -777,54 +407,7 @@
       <br>
       <p style="font-family:'Playfair Display',serif; font-style:italic;">Forever yours ✨</p>
     </div>
-
-    <!-- Photos Section -->
-    <div class="photo-section">
-      <h2>✦ Our little memories ✦</h2>
-      <div class="photo-grid" id="photo-grid">
-        <!--
-          ✏️ HOW TO ADD YOUR PHOTOS:
-          Replace the src="" in each <img> tag with your image path or URL.
-          E.g.: <img src="photos/us1.jpg" ...>  or  <img src="https://your-url.com/photo.jpg" ...>
-          The image will show automatically once a valid src is provided.
-          You can duplicate or remove .photo-frame blocks to change the count.
-        -->
-        <div class="photo-frame" data-src="">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-label">Add photo 1<br><small>replace data-src</small></div>
-          <img src="" alt="Memory 1" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
-        </div>
-        <div class="photo-frame" data-src="">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-label">Add photo 2<br><small>replace data-src</small></div>
-          <img src="" alt="Memory 2" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
-        </div>
-        <div class="photo-frame" data-src="">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-label">Add photo 3<br><small>replace data-src</small></div>
-          <img src="" alt="Memory 3" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
-        </div>
-        <div class="photo-frame" data-src="">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-label">Add photo 4<br><small>replace data-src</small></div>
-          <img src="" alt="Memory 4" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
-        </div>
-        <div class="photo-frame" data-src="">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-label">Add photo 5<br><small>replace data-src</small></div>
-          <img src="" alt="Memory 5" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
-        </div>
-        <div class="photo-frame" data-src="">
-          <div class="placeholder-icon">📷</div>
-          <div class="placeholder-label">Add photo 6<br><small>replace data-src</small></div>
-          <img src="" alt="Memory 6" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
-        </div>
-      </div>
-    </div>
-
-    <div class="letter-footer">
-      Made with 💜 just for you
-    </div>
+    <div class="letter-footer">Made with 💜 just for you</div>
   </div>
 </div>
 
@@ -832,111 +415,84 @@
   /* ── Floating Background Elements ───────────────── */
   (function spawnFloaters() {
     const container = document.getElementById('particles');
-
-    // SVG templates — returns an SVG string for each type
     function makeCake(size) {
-      const s = size / 48;
       return `<svg width="${size}" height="${size * 1.1}" viewBox="0 0 48 52" xmlns="http://www.w3.org/2000/svg">
-        <!-- candle -->
         <rect x="21" y="2" width="6" height="10" rx="2" fill="#f8bbd0"/>
-        <!-- flame -->
         <ellipse cx="24" cy="2" rx="2.5" ry="3.5" fill="#ffcc80"/>
         <ellipse cx="24" cy="1.5" rx="1.2" ry="2" fill="#fff9c4" opacity="0.9"/>
-        <!-- top tier -->
         <rect x="10" y="12" width="28" height="12" rx="4" fill="#ce93d8"/>
-        <!-- frosting drips top -->
         <path d="M10,18 Q13,24 16,18 Q19,24 22,18 Q25,24 28,18 Q31,24 34,18 Q37,24 38,18" fill="none" stroke="#f3e5f5" stroke-width="3" stroke-linecap="round"/>
-        <!-- bottom tier -->
         <rect x="4" y="24" width="40" height="16" rx="4" fill="#b39ddb"/>
-        <!-- frosting drips bottom -->
         <path d="M4,30 Q8,38 12,30 Q16,38 20,30 Q24,38 28,30 Q32,38 36,30 Q40,38 44,30" fill="none" stroke="#e1bee7" stroke-width="3" stroke-linecap="round"/>
-        <!-- plate -->
         <ellipse cx="24" cy="40" rx="22" ry="4" fill="#7e57c2" opacity="0.6"/>
-        <!-- dots decoration -->
         <circle cx="18" cy="30" r="2" fill="#f48fb1" opacity="0.8"/>
         <circle cx="24" cy="28" r="2" fill="#fff9c4" opacity="0.8"/>
         <circle cx="30" cy="30" r="2" fill="#f48fb1" opacity="0.8"/>
       </svg>`;
     }
-
     function makeFlower(size) {
       return `<svg width="${size}" height="${size * 1.3}" viewBox="0 0 36 48" xmlns="http://www.w3.org/2000/svg">
-        <!-- stem -->
         <path d="M18,48 Q14,36 18,28" fill="none" stroke="#81c784" stroke-width="2.5" stroke-linecap="round"/>
-        <!-- leaves -->
         <path d="M18,40 Q10,34 12,28" fill="none" stroke="#81c784" stroke-width="2" stroke-linecap="round"/>
         <ellipse cx="14" cy="34" rx="5" ry="3" fill="#a5d6a7" opacity="0.8" transform="rotate(-30 14 34)"/>
         <path d="M18,36 Q26,30 24,24" fill="none" stroke="#81c784" stroke-width="2" stroke-linecap="round"/>
         <ellipse cx="22" cy="30" rx="5" ry="3" fill="#a5d6a7" opacity="0.8" transform="rotate(30 22 30)"/>
-        <!-- petals -->
         <ellipse cx="18" cy="14" rx="4" ry="8" fill="#b39ddb" opacity="0.85"/>
         <ellipse cx="18" cy="14" rx="4" ry="8" fill="#ce93d8" opacity="0.75" transform="rotate(45 18 22)"/>
-        <ellipse cx="18" cy="14" rx="4" ry="8" fill="#b39ddb" opacity="0.8"  transform="rotate(90 18 22)"/>
+        <ellipse cx="18" cy="14" rx="4" ry="8" fill="#b39ddb" opacity="0.8" transform="rotate(90 18 22)"/>
         <ellipse cx="18" cy="14" rx="4" ry="8" fill="#ce93d8" opacity="0.75" transform="rotate(135 18 22)"/>
-        <!-- centre -->
         <circle cx="18" cy="22" r="5" fill="#f3e5f5"/>
         <circle cx="18" cy="22" r="3" fill="#f8bbd0"/>
         <circle cx="18" cy="22" r="1.5" fill="#f48fb1"/>
       </svg>`;
     }
-
-    function makeConfetti(size) {
-      const shapes = [
-        // rectangle strip
-        `<svg width="${size}" height="${size * 0.4}" viewBox="0 0 30 12" xmlns="http://www.w3.org/2000/svg">
-          <rect x="0" y="0" width="30" height="12" rx="3" fill="${pickColor()}"/>
-        </svg>`,
-        // circle dot
-        `<svg width="${size * 0.7}" height="${size * 0.7}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-          <circle cx="10" cy="10" r="10" fill="${pickColor()}"/>
-        </svg>`,
-        // star
-        `<svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" fill="${pickColor()}" opacity="0.9"/>
-        </svg>`,
-        // diamond
-        `<svg width="${size * 0.7}" height="${size}" viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg">
-          <polygon points="10,0 20,14 10,28 0,14" fill="${pickColor()}" opacity="0.85"/>
-        </svg>`,
-      ];
-      return shapes[Math.floor(Math.random() * shapes.length)];
-    }
-
     function pickColor() {
       const colors = ['#b39ddb','#f48fb1','#ce93d8','#fff176','#80deea','#f8bbd0','#e1bee7','#80cbc4'];
       return colors[Math.floor(Math.random() * colors.length)];
     }
-
-    const types = ['cake','flower','confetti','confetti','confetti']; // more confetti
-    const total = 55;
-
-    for (let i = 0; i < total; i++) {
+    function makeConfetti(size) {
+      const shapes = [
+        `<svg width="${size}" height="${size * 0.4}" viewBox="0 0 30 12" xmlns="http://www.w3.org/2000/svg"><rect x="0" y="0" width="30" height="12" rx="3" fill="${pickColor()}"/></svg>`,
+        `<svg width="${size * 0.7}" height="${size * 0.7}" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="10" fill="${pickColor()}"/></svg>`,
+        `<svg width="${size}" height="${size}" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><polygon points="12,2 15,9 22,9 16.5,14 18.5,21 12,17 5.5,21 7.5,14 2,9 9,9" fill="${pickColor()}" opacity="0.9"/></svg>`,
+        `<svg width="${size * 0.7}" height="${size}" viewBox="0 0 20 28" xmlns="http://www.w3.org/2000/svg"><polygon points="10,0 20,14 10,28 0,14" fill="${pickColor()}" opacity="0.85"/></svg>`,
+      ];
+      return shapes[Math.floor(Math.random() * shapes.length)];
+    }
+    function makeButterfly(size) {
+      const palettes = [['#ce93d8','#f3e5f5'],['#f48fb1','#fce4ec'],['#80cbc4','#e0f2f1'],['#b39ddb','#ede7f6'],['#fff176','#fffde7']];
+      const [wing, wingLight] = palettes[Math.floor(Math.random() * palettes.length)];
+      return `<svg width="${size}" height="${size * 0.85}" viewBox="0 0 52 44" xmlns="http://www.w3.org/2000/svg">
+        <path d="M26,22 C22,14 8,4 4,10 C0,16 10,28 26,22Z" fill="${wing}" opacity="0.88"/>
+        <path d="M26,22 C22,14 8,4 4,10 C0,16 10,28 26,22Z" fill="${wingLight}" opacity="0.35"/>
+        <path d="M26,22 C18,24 6,34 8,40 C10,46 22,38 26,22Z" fill="${wing}" opacity="0.78"/>
+        <path d="M26,22 C30,14 44,4 48,10 C52,16 42,28 26,22Z" fill="${wing}" opacity="0.88"/>
+        <path d="M26,22 C30,14 44,4 48,10 C52,16 42,28 26,22Z" fill="${wingLight}" opacity="0.35"/>
+        <path d="M26,22 C34,24 46,34 44,40 C42,46 30,38 26,22Z" fill="${wing}" opacity="0.78"/>
+        <ellipse cx="26" cy="22" rx="2.2" ry="9" fill="#5d4037" opacity="0.75"/>
+        <circle cx="26" cy="13" r="2.5" fill="#5d4037" opacity="0.75"/>
+        <path d="M26,11 Q22,5 20,3" fill="none" stroke="#5d4037" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <circle cx="20" cy="3" r="1.2" fill="#5d4037" opacity="0.7"/>
+        <path d="M26,11 Q30,5 32,3" fill="none" stroke="#5d4037" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+        <circle cx="32" cy="3" r="1.2" fill="#5d4037" opacity="0.7"/>
+        <circle cx="14" cy="14" r="2" fill="${wingLight}" opacity="0.7"/>
+        <circle cx="38" cy="14" r="2" fill="${wingLight}" opacity="0.7"/>
+      </svg>`;
+    }
+    const types = ['cake','flower','butterfly','confetti','confetti','confetti'];
+    for (let i = 0; i < 60; i++) {
       const type = types[Math.floor(Math.random() * types.length)];
       const el = document.createElement('div');
       el.className = 'floater';
-
       let size, html;
-      if (type === 'cake') {
-        size = 28 + Math.random() * 22;
-        html = makeCake(size);
-      } else if (type === 'flower') {
-        size = 22 + Math.random() * 18;
-        html = makeFlower(size);
-      } else {
-        size = 12 + Math.random() * 14;
-        html = makeConfetti(size);
-      }
-
+      if (type === 'cake')           { size = 28 + Math.random() * 22; html = makeCake(size); }
+      else if (type === 'flower')    { size = 22 + Math.random() * 18; html = makeFlower(size); }
+      else if (type === 'butterfly') { size = 24 + Math.random() * 20; html = makeButterfly(size); }
+      else                           { size = 12 + Math.random() * 14; html = makeConfetti(size); }
       el.innerHTML = html;
-      const dur  = (type === 'cake' ? 14 : 9) + Math.random() * 10;
-      const sway = (Math.random() - 0.5) * 60; // horizontal drift
-      el.style.cssText = `
-        left: ${Math.random() * 105 - 2}%;
-        animation-duration: ${dur}s;
-        animation-delay: ${Math.random() * -dur}s;
-        --sway: ${sway}px;
-      `;
-      // override animation to include horizontal sway
+      const dur = (type === 'cake' ? 14 : type === 'butterfly' ? 12 : 9) + Math.random() * 10;
+      const sway = (Math.random() - 0.5) * 60;
+      el.style.cssText = `left: ${Math.random() * 105 - 2}%; --sway: ${sway}px;`;
       el.style.animation = `floatSway ${dur}s linear ${-(Math.random() * dur)}s infinite`;
       container.appendChild(el);
     }
@@ -948,9 +504,9 @@
     "Yeah, I'm a talking strawberry. Totally normal. Moving on…",
     "I heard it's someone very special's birthday today! 🎂",
     "Someone kind, beautiful, and absolutely wonderful…",
-    "Someone who deserves all the love in the world 💜",
-    "So I've been sent on a very important mission —",
-    "To deliver something straight from the heart 🎁",
+    "The person that sent you this wants you to know that you mean the world to him 💜",
+    "So he sent me to accomplish this very important mission…",
+    "To deliver something that comes from the deepest crevices of his heart",
     "Are you ready? There's a little gift waiting for you…",
   ];
 
@@ -961,128 +517,99 @@
 
   const bubbleWrap = document.getElementById('bubble-wrap');
   const bubbleText = document.getElementById('bubble-text');
-  const cursor    = document.getElementById('cursor');
-  const nextBtn   = document.getElementById('next-btn');
-  const berrySvg  = document.getElementById('berry-svg');
-
+  const cursor     = document.getElementById('cursor');
+  const nextBtn    = document.getElementById('next-btn');
+  const berrySvg   = document.getElementById('berry-svg');
   const mouthSmile = document.getElementById('mouth-smile');
   const mouthOpen  = document.getElementById('mouth-open');
   let mouthToggle  = false;
 
   function setMouth(open) {
-    mouthSmile.style.display = open ? 'none'  : '';
-    mouthOpen.style.display  = open ? ''      : 'none';
+    mouthSmile.style.display = open ? 'none' : '';
+    mouthOpen.style.display  = open ? ''     : 'none';
   }
-
   function setTalking(state) {
     isTalking = state;
-    if (!state) setMouth(false); // always close when done
+    if (!state) setMouth(false);
     if (state) berrySvg.classList.add('talking');
     else        berrySvg.classList.remove('talking');
   }
-
   function typeText(text, onDone) {
-    // cancel any currently running typing animation first
     if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
     setTalking(false);
-
     charIndex = 0;
     bubbleText.textContent = '';
     cursor.style.display = 'inline-block';
     setTalking(true);
-
     function tick() {
       if (charIndex < text.length) {
         bubbleText.textContent += text[charIndex++];
-        // alternate open/close on each visible character
         const ch = text[charIndex - 1];
-        if (ch !== ' ') {
-          mouthToggle = !mouthToggle;
-          setMouth(mouthToggle);
-        }
+        if (ch !== ' ') { mouthToggle = !mouthToggle; setMouth(mouthToggle); }
         typingTimer = setTimeout(tick, 38 + Math.random() * 22);
       } else {
-        setMouth(false);
-        setTalking(false);
+        setMouth(false); setTalking(false);
         cursor.style.display = 'none';
         if (onDone) onDone();
       }
     }
     tick();
   }
-
   function showDialogue(index) {
     bubbleWrap.classList.add('show');
     nextBtn.classList.remove('show');
-    // blur the button so Space/Enter can't re-fire it while it's hidden
     nextBtn.blur();
-
     typeText(dialogues[index], () => {
       const isLast = index === dialogues.length - 1;
       nextBtn.textContent = isLast ? "Open my gift 🎁" : "Continue ✨";
       nextBtn.classList.add('show');
     });
   }
-
   nextBtn.addEventListener('click', () => {
-    // ignore clicks while the button isn't visually shown
     if (!nextBtn.classList.contains('show')) return;
-    nextBtn.blur(); // prevent spacebar from re-triggering immediately
+    nextBtn.blur();
     advanceDialogue();
   });
-
-  // Space advances dialogue too — but only once text is done loading
   document.addEventListener('keydown', (e) => {
     if (e.code !== 'Space') return;
-    if (isTalking) return;                              // still typing — do nothing
-    if (!nextBtn.classList.contains('show')) return;    // button not ready yet
-    e.preventDefault();                                 // stop page scroll
+    if (isTalking) return;
+    if (!nextBtn.classList.contains('show')) return;
+    e.preventDefault();
     advanceDialogue();
   });
-
   function advanceDialogue() {
     dialogueIndex++;
-    if (dialogueIndex < dialogues.length) {
-      showDialogue(dialogueIndex);
-    } else {
-      transitionToGift();
-    }
+    if (dialogueIndex < dialogues.length) showDialogue(dialogueIndex);
+    else transitionToGift();
   }
-
   function transitionToGift() {
     const dialoguePhase = document.getElementById('dialogue-phase');
     const giftScene     = document.getElementById('gift-scene');
-
     dialoguePhase.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
     dialoguePhase.style.opacity = '0';
     dialoguePhase.style.transform = 'scale(0.92)';
-
     setTimeout(() => {
       dialoguePhase.style.display = 'none';
       giftScene.style.display = 'flex';
-      // mini strawberry appears and gives first hint
       setTimeout(() => showMiniPrompt("Psst! Click the box to unwrap it! 🎁"), 700);
     }, 600);
   }
 
-  /* ── Gift / Letter (3-click system) ────────────── */
+  /* ── Gift (3-click) ──────────────────────────────── */
   let giftClicks = 0;
   const CLICKS_NEEDED = 3;
   let miniTypingTimer = null;
   let miniMouthToggle = false;
 
-  const miniSmile  = document.getElementById('mini-mouth-smile');
-  const miniOpen   = document.getElementById('mini-mouth-open');
+  const miniSmile      = document.getElementById('mini-mouth-smile');
+  const miniOpen       = document.getElementById('mini-mouth-open');
   const miniBubbleWrap = document.getElementById('mini-bubble-wrap');
   const miniBubbleText = document.getElementById('mini-bubble-text');
   const miniCursor     = document.getElementById('mini-cursor');
   const miniBerryWrap  = document.getElementById('mini-berry-wrap');
-  const miniBerry      = document.getElementById('mini-berry-svg');
 
   const giftPrompts = [
-    // shown after click 1 (1 more needed)
     "Ooh! Keep going — two more times! 🍓",
-    // shown after click 2 (1 more needed)
     "So close!! One more tap! 💜",
   ];
 
@@ -1090,7 +617,6 @@
     miniSmile.style.display = open ? 'none' : '';
     miniOpen.style.display  = open ? ''     : 'none';
   }
-
   function miniTypeText(text, onDone) {
     clearTimeout(miniTypingTimer);
     miniBubbleText.textContent = '';
@@ -1099,10 +625,7 @@
     function tick() {
       if (i < text.length) {
         miniBubbleText.textContent += text[i++];
-        if (text[i-1] !== ' ') {
-          miniMouthToggle = !miniMouthToggle;
-          setMiniMouth(miniMouthToggle);
-        }
+        if (text[i-1] !== ' ') { miniMouthToggle = !miniMouthToggle; setMiniMouth(miniMouthToggle); }
         miniTypingTimer = setTimeout(tick, 36 + Math.random() * 20);
       } else {
         setMiniMouth(false);
@@ -1112,20 +635,14 @@
     }
     tick();
   }
-
   function showMiniPrompt(text) {
     miniBerryWrap.classList.add('show');
-    // small delay so it feels like a reaction
-    setTimeout(() => {
-      miniBubbleWrap.classList.add('show');
-      miniTypeText(text);
-    }, 150);
+    setTimeout(() => { miniBubbleWrap.classList.add('show'); miniTypeText(text); }, 150);
   }
 
   function handleGiftClick() {
     if (giftClicks >= CLICKS_NEEDED) return;
     giftClicks++;
-
     const wrap    = document.getElementById('gift-box-wrap');
     const lidGrp  = document.getElementById('gift-lid-group');
     const wordI    = document.getElementById('word-i');
@@ -1134,37 +651,24 @@
     const tapHint  = document.getElementById('tap-hint');
 
     if (giftClicks === 1) {
-      // lid lifts a little, "I" appears
-      lidGrp.classList.remove('lift2','lift3');
-      void lidGrp.offsetWidth;
-      lidGrp.classList.add('lift1');
+      lidGrp.classList.remove('lift2','lift3'); void lidGrp.offsetWidth; lidGrp.classList.add('lift1');
       setTimeout(() => wordI.classList.add('visible'), 250);
       tapHint.textContent = '💜 tap again 💜';
       showMiniPrompt(giftPrompts[0]);
-
     } else if (giftClicks === 2) {
-      // lid lifts more, "Love" appears
-      lidGrp.classList.remove('lift1','lift3');
-      void lidGrp.offsetWidth;
-      lidGrp.classList.add('lift2');
+      lidGrp.classList.remove('lift1','lift3'); void lidGrp.offsetWidth; lidGrp.classList.add('lift2');
       setTimeout(() => wordLove.classList.add('visible'), 250);
       tapHint.textContent = '💜 one more time 💜';
       showMiniPrompt(giftPrompts[1]);
-
     } else {
-      // lid flies off, "You" appears, then letter opens
-      lidGrp.classList.remove('lift1','lift2');
-      void lidGrp.offsetWidth;
-      lidGrp.classList.add('lift3');
+      lidGrp.classList.remove('lift1','lift2'); void lidGrp.offsetWidth; lidGrp.classList.add('lift3');
       setTimeout(() => wordYou.classList.add('visible'), 200);
       tapHint.style.display = 'none';
       miniBerryWrap.classList.remove('show');
       wrap.classList.add('open');
-
       setTimeout(() => {
-        document.getElementById('letter-overlay').classList.add('open');
+        openPhotoStack();
         launchConfetti();
-        // fade out the box — big letter will appear when letter is first closed
         setTimeout(() => {
           wrap.style.transition = 'opacity 0.5s ease';
           wrap.style.opacity = '0';
@@ -1174,34 +678,104 @@
     }
   }
 
-  // Wire big-letter click to reopen
-  document.getElementById('big-letter-wrap').addEventListener('click', function() {
-    reopenLetter();
-  });
+  /* ── Photo Stack ─────────────────────────────────── */
+  const photos = [
+    { src: "Photos/1.jpg", caption: "our first official-ish (valentines) date 🪻" },
+    { src: "Photos/1.jpg", caption: "with boba 🍓" },
+    { src: "Photos/2.jpg", caption: "our first time playing pool together 🎱" },
+    { src: "Photos/3.jpg", caption: "our first movie date 🎥" },
+    { src: "Photos/4.jpg", caption: "best day ever 🎉" },
+    { src: "Photos/5.jpg", caption: "I love you so much 💗" },
+    { src: "Photos/6.jpg", caption: "happy birthday, my love 🎂" },
+  ];
+
+  let photoIndex = -1;
+  const stackEl      = document.getElementById('photo-stack');
+  const stackOverlay = document.getElementById('photo-stack-overlay');
+  const tapHintEl    = document.getElementById('photo-tap-hint');
+  const counterEl    = document.getElementById('photo-counter');
+  const rotations    = photos.map(() => (Math.random() * 18 - 9).toFixed(1));
+
+  function buildPolaroid(index) {
+    const { src, caption } = photos[index];
+    const rot = rotations[index];
+    const div = document.createElement('div');
+    div.className = 'polaroid';
+    div.style.setProperty('--rot', `${rot}deg`);
+    div.style.top  = `${(index % 3) * 3}px`;
+    div.style.left = `${(index % 2) * 4 - 2}px`;
+    div.style.zIndex = index + 1;
+    const imgHtml = src
+      ? `<div class="polaroid-img"><img src="${src}" alt="Memory ${index+1}"/></div>`
+      : `<div class="polaroid-placeholder"><span>📷</span><span>photo ${index + 1}</span></div>`;
+    div.innerHTML = `${imgHtml}<div class="polaroid-caption">${caption}</div>`;
+    return div;
+  }
+
+  let firstPhotoRun = true;
+
+  function openPhotoStack() {
+    photoIndex = -1;
+    stackEl.innerHTML = '';
+    document.getElementById('open-shelf').classList.remove('show');
+    // hide the mini strawberry — it's done its job
+    miniBerryWrap.style.transition = 'opacity 0.4s ease';
+    miniBerryWrap.style.opacity = '0';
+    setTimeout(() => { miniBerryWrap.style.display = 'none'; }, 400);
+    stackOverlay.classList.add('open');
+    counterEl.textContent = `0 / ${photos.length}`;
+    tapHintEl.textContent = 'tap to reveal our memories 📷';
+    // automatically show the first photo
+    setTimeout(() => revealNextPhoto(), 400);
+  }
+
+  function revealNextPhoto() {
+    photoIndex++;
+    if (photoIndex < photos.length) {
+      const card = buildPolaroid(photoIndex);
+      stackEl.appendChild(card);
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          card.classList.add('fly-in');
+          card.addEventListener('animationend', () => {
+            card.classList.remove('fly-in');
+            card.classList.add('landed');
+            card.style.transform = `rotate(${rotations[photoIndex]}deg)`;
+          }, { once: true });
+        });
+      });
+      counterEl.textContent = `${photoIndex + 1} / ${photos.length}`;
+      if (photoIndex === photos.length - 1) tapHintEl.textContent = 'tap to continue 💜';
+    } else {
+      stackOverlay.classList.remove('open');
+      if (firstPhotoRun) {
+        firstPhotoRun = false;
+        document.getElementById('letter-overlay').classList.add('open');
+      } else {
+        document.getElementById('open-shelf').classList.add('show');
+      }
+    }
+  }
+
+  stackOverlay.addEventListener('click', revealNextPhoto);
+
+  document.getElementById('shelf-photos').addEventListener('click', function() { openPhotoStack(); });
+  document.getElementById('shelf-letter').addEventListener('click', function() { document.getElementById('letter-overlay').classList.add('open'); });
 
   function closeLetter() {
     document.getElementById('letter-overlay').classList.remove('open');
-    // swap box for big letter
-    const bigLetter = document.getElementById('big-letter-wrap');
-    bigLetter.classList.add('show');
+    document.getElementById('open-shelf').classList.add('show');
   }
-
-  function reopenLetter() {
-    document.getElementById('letter-overlay').classList.add('open');
-  }
-
-  // Close on overlay click
   document.getElementById('letter-overlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('letter-overlay')) closeLetter();
   });
 
-  /* ── Confetti ───────────────────────────────────── */
+  /* ── Confetti ────────────────────────────────────── */
   function launchConfetti() {
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
-    canvas.width  = window.innerWidth;
+    canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-
     const colors = ['#b39ddb','#f48fb1','#ce93d8','#fff176','#80cbc4','#f3e5f5','#ede7f6'];
     const pieces = Array.from({ length: 120 }, () => ({
       x: Math.random() * canvas.width,
@@ -1214,33 +788,18 @@
       tiltSpeed: 0.05 + Math.random() * 0.1,
       shape: Math.random() > 0.5 ? 'circle' : 'rect',
     }));
-
     let frame = 0;
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       pieces.forEach(p => {
-        ctx.beginPath();
-        ctx.fillStyle = p.color;
-        if (p.shape === 'circle') {
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        } else {
-          ctx.save();
-          ctx.translate(p.x, p.y);
-          ctx.rotate((p.tilt * Math.PI) / 180);
-          ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r);
-          ctx.restore();
-        }
+        ctx.beginPath(); ctx.fillStyle = p.color;
+        if (p.shape === 'circle') { ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); }
+        else { ctx.save(); ctx.translate(p.x, p.y); ctx.rotate((p.tilt * Math.PI) / 180); ctx.fillRect(-p.r, -p.r/2, p.r*2, p.r); ctx.restore(); }
         ctx.fill();
-
-        p.y      += p.d;
-        p.tiltAngle += p.tiltSpeed;
-        p.tilt    = Math.sin(p.tiltAngle) * 12;
-        p.x      += Math.sin(p.tiltAngle) * 1.2;
-
-        if (p.y > canvas.height + 20) {
-          p.y = -20;
-          p.x = Math.random() * canvas.width;
-        }
+        p.y += p.d; p.tiltAngle += p.tiltSpeed;
+        p.tilt = Math.sin(p.tiltAngle) * 12;
+        p.x += Math.sin(p.tiltAngle) * 1.2;
+        if (p.y > canvas.height + 20) { p.y = -20; p.x = Math.random() * canvas.width; }
       });
       frame++;
       if (frame < 300) requestAnimationFrame(draw);
@@ -1249,10 +808,22 @@
     draw();
   }
 
-  /* ── Init ───────────────────────────────────────── */
-  window.addEventListener('load', () => {
-    setTimeout(() => showDialogue(0), 600);
-  });
+  /* ── Init ────────────────────────────────────────── */
+  window.addEventListener('load', () => { setTimeout(() => showDialogue(0), 600); });
+
+  /* ── Background Music ───────────────────────────── */
+  const bgm = new Audio('Audio/bgm.mp3');
+  bgm.loop = true;
+  bgm.volume = 0.35;
+  let bgmStarted = false;
+  function startBgm() {
+    if (bgmStarted) return;
+    bgmStarted = true;
+    bgm.play().catch(() => {}); // silently ignore if still blocked
+  }
+  document.addEventListener('click', startBgm, { once: true });
+  document.addEventListener('keydown', startBgm, { once: true });
+  document.addEventListener('touchstart', startBgm, { once: true });
 </script>
 </body>
 </html>
