@@ -826,14 +826,39 @@
 
   /* ── Init ────────────────────────────────────────── */
   window.addEventListener('load', () => {
+
+    // Create a tap-to-begin overlay so the first interaction is always deliberate
+    const splash = document.createElement('div');
+    splash.style.cssText = `
+      position:fixed; inset:0; z-index:9999; cursor:pointer;
+      display:flex; align-items:center; justify-content:center;
+    `;
+    // invisible — just catches the first tap cleanly
+    document.body.appendChild(splash);
+
     function begin() {
-      startBgm(); // called directly inside user gesture — guaranteed to work on mobile
+      splash.remove();
+
+      // Unlock audio on Android/iOS by resuming an AudioContext inside the gesture
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      ctx.resume().then(() => {
+        // create & play a silent buffer — this unlocks the audio engine
+        const buf = ctx.createBuffer(1, 1, 22050);
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        src.connect(ctx.destination);
+        src.start(0);
+        // now play BGM — audio is unlocked
+        bgm.play().catch(() => {});
+        bgmStarted = true;
+      });
+
       setTimeout(() => showDialogue(0), 300);
     }
-    // use capture:true so this fires before anything else on the page
-    document.addEventListener('click',      begin, { once: true, capture: true });
-    document.addEventListener('touchend',   begin, { once: true, capture: true });
-    document.addEventListener('keydown',    begin, { once: true, capture: true });
+
+    splash.addEventListener('touchend', begin, { once: true });
+    splash.addEventListener('click',    begin, { once: true });
+    document.addEventListener('keydown', begin, { once: true });
   });
 
   /* ── Background Music ───────────────────────────── */
@@ -850,7 +875,7 @@
   /* ── Talking Sound ───────────────────────────────── */
   const talkingSfx = new Audio('Audio/talking.mp3');
   talkingSfx.loop = true;
-  talkingSfx.volume = 0.10;
+  talkingSfx.volume = 0.15;
   talkingSfx.preload = 'auto';
 
   /* ── Shake Sound ─────────────────────────────────── */
