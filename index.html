@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Happy Birthday, Bebe 💜</title>
+  <title>Happy Birthday, My Love 💜</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Quicksand:wght@400;500;600&display=swap" rel="stylesheet"/>
   <style>
     /* ── Reset & Base ─────────────────────────────── */
@@ -687,7 +687,7 @@
     <button id="close-btn" onclick="closeLetter()" title="Close">×</button>
 
     <div class="letter-header">
-      <h1>Happy Birthday, Bebe 🍓</h1>
+      <h1>Happy Birthday, My Love 🍓</h1>
       <div class="subtitle">a little something, just for you</div>
     </div>
     <div class="letter-divider"></div>
@@ -725,7 +725,7 @@
         <div class="photo-frame" data-src="">
           <div class="placeholder-icon">📷</div>
           <div class="placeholder-label">Add photo 1<br><small>replace data-src</small></div>
-          <img src="Photos/1.jpg" alt="Memory 1" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
+          <img src="" alt="Memory 1" onload="this.classList.add('loaded'); this.parentElement.querySelector('.placeholder-icon')?.remove(); this.parentElement.querySelector('.placeholder-label')?.remove();" onerror="this.style.display='none'"/>
         </div>
         <div class="photo-frame" data-src="">
           <div class="placeholder-icon">📷</div>
@@ -788,7 +788,7 @@
     "I heard it's someone very special's birthday today! 🎂",
     "Someone kind, beautiful, and absolutely wonderful…",
     "Someone who deserves all the love in the world 💜",
-    "So I've been sent on a very important mission…",
+    "So I've been sent on a very important mission —",
     "To deliver something straight from the heart 🎁",
     "Are you ready? There's a little gift waiting for you…",
   ];
@@ -814,12 +814,17 @@
   }
 
   function setTalking(state) {
+    isTalking = state;
     if (!state) setMouth(false); // always close when done
     if (state) berrySvg.classList.add('talking');
     else        berrySvg.classList.remove('talking');
   }
 
   function typeText(text, onDone) {
+    // cancel any currently running typing animation first
+    if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+    setTalking(false);
+
     charIndex = 0;
     bubbleText.textContent = '';
     cursor.style.display = 'inline-block';
@@ -848,6 +853,8 @@
   function showDialogue(index) {
     bubbleWrap.classList.add('show');
     nextBtn.classList.remove('show');
+    // blur the button so Space/Enter can't re-fire it while it's hidden
+    nextBtn.blur();
 
     typeText(dialogues[index], () => {
       const isLast = index === dialogues.length - 1;
@@ -857,13 +864,29 @@
   }
 
   nextBtn.addEventListener('click', () => {
+    // ignore clicks while the button isn't visually shown
+    if (!nextBtn.classList.contains('show')) return;
+    nextBtn.blur(); // prevent spacebar from re-triggering immediately
+    advanceDialogue();
+  });
+
+  // Space advances dialogue too — but only once text is done loading
+  document.addEventListener('keydown', (e) => {
+    if (e.code !== 'Space') return;
+    if (isTalking) return;                              // still typing — do nothing
+    if (!nextBtn.classList.contains('show')) return;    // button not ready yet
+    e.preventDefault();                                 // stop page scroll
+    advanceDialogue();
+  });
+
+  function advanceDialogue() {
     dialogueIndex++;
     if (dialogueIndex < dialogues.length) {
       showDialogue(dialogueIndex);
     } else {
       transitionToGift();
     }
-  });
+  }
 
   function transitionToGift() {
     const dialoguePhase = document.getElementById('dialogue-phase');
