@@ -142,7 +142,7 @@
     .polaroid-placeholder span:first-child { font-size: 2rem; }
     .polaroid-placeholder span:last-child { font-size: 0.72rem; opacity: 0.7; }
     .polaroid-caption { margin-top: 8px; font-family: 'Quicksand', sans-serif; font-size: 0.82rem; color: #555; text-align: center; min-height: 1.2em; line-height: 1.4; padding: 0 4px; }
-    #photo-tap-hint { margin-top: 28px; font-size: 0.88rem; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; animation: pulse 1.8s ease-in-out infinite; text-align: center; }
+    #photo-tap-hint { margin-top: 50px; font-size: 0.88rem; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; animation: pulse 1.8s ease-in-out infinite; text-align: center; }
     #photo-counter { margin-top: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.55); letter-spacing: 0.05em; }
     .letter-footer { text-align: center; margin-top: 2.5rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; color: var(--lavender-deep); }
     #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
@@ -530,8 +530,8 @@
   }
   function setTalking(state) {
     isTalking = state;
-    if (!state) setMouth(false);
-    if (state) berrySvg.classList.add('talking');
+    if (!state) { setMouth(false); talkingSfx.pause(); talkingSfx.currentTime = 0; }
+    if (state) { berrySvg.classList.add('talking'); talkingSfx.play().catch(() => {}); }
     else        berrySvg.classList.remove('talking');
   }
   function typeText(text, onDone) {
@@ -621,6 +621,7 @@
     clearTimeout(miniTypingTimer);
     miniBubbleText.textContent = '';
     miniCursor.style.display = 'inline-block';
+    talkingSfx.play().catch(() => {});
     let i = 0;
     function tick() {
       if (i < text.length) {
@@ -629,6 +630,7 @@
         miniTypingTimer = setTimeout(tick, 36 + Math.random() * 20);
       } else {
         setMiniMouth(false);
+        talkingSfx.pause(); talkingSfx.currentTime = 0;
         miniCursor.style.display = 'none';
         if (onDone) onDone();
       }
@@ -643,6 +645,8 @@
   function handleGiftClick() {
     if (giftClicks >= CLICKS_NEEDED) return;
     giftClicks++;
+    // play shake sound on every tap
+    playShake();
     const wrap    = document.getElementById('gift-box-wrap');
     const lidGrp  = document.getElementById('gift-lid-group');
     const wordI    = document.getElementById('word-i');
@@ -809,21 +813,53 @@
   }
 
   /* ── Init ────────────────────────────────────────── */
-  window.addEventListener('load', () => { setTimeout(() => showDialogue(0), 600); });
+  window.addEventListener('load', () => {
+    // Show the dialogue phase (strawberry visible) but don't start typing yet
+    // Wait for first tap/click/keypress before beginning
+    function begin() {
+      startBgm();
+      setTimeout(() => showDialogue(0), 300);
+    }
+    document.addEventListener('click',      begin, { once: true });
+    document.addEventListener('keydown',    begin, { once: true });
+    document.addEventListener('touchstart', begin, { once: true });
+  });
 
   /* ── Background Music ───────────────────────────── */
   const bgm = new Audio('Audio/bgm.mp3');
   bgm.loop = true;
-  bgm.volume = 0.35;
+  bgm.volume = 0.10;
   let bgmStarted = false;
   function startBgm() {
     if (bgmStarted) return;
     bgmStarted = true;
-    bgm.play().catch(() => {}); // silently ignore if still blocked
+    bgm.play().catch(() => {});
   }
   document.addEventListener('click', startBgm, { once: true });
   document.addEventListener('keydown', startBgm, { once: true });
   document.addEventListener('touchstart', startBgm, { once: true });
+
+  /* ── Talking Sound ───────────────────────────────── */
+  const talkingSfx = new Audio('Audio/talking.mp3');
+  talkingSfx.loop = true;
+  talkingSfx.volume = 0.20;
+  talkingSfx.preload = 'auto';
+
+  /* ── Shake Sound ─────────────────────────────────── */
+  const shakeSfx = new Audio('Audio/shaking.mp3');
+  shakeSfx.volume = 0.7;
+  shakeSfx.preload = 'auto';
+  let shakeTimer = null;
+
+  function playShake() {
+    if (shakeTimer) clearTimeout(shakeTimer);
+    shakeSfx.currentTime = 0;
+    shakeSfx.play().catch(() => {});
+    shakeTimer = setTimeout(() => {
+      shakeSfx.pause();
+      shakeSfx.currentTime = 0;
+    }, 1000);
+  }
 </script>
 </body>
 </html>
