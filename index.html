@@ -142,7 +142,7 @@
     .polaroid-placeholder span:first-child { font-size: 2rem; }
     .polaroid-placeholder span:last-child { font-size: 0.72rem; opacity: 0.7; }
     .polaroid-caption { margin-top: 8px; font-family: 'Quicksand', sans-serif; font-size: 0.82rem; color: #555; text-align: center; min-height: 1.2em; line-height: 1.4; padding: 0 4px; }
-    #photo-tap-hint { margin-top: 50px; font-size: 0.88rem; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; animation: pulse 1.8s ease-in-out infinite; text-align: center; }
+    #photo-tap-hint { margin-top: 28px; font-size: 0.88rem; color: rgba(255,255,255,0.85); letter-spacing: 0.06em; animation: pulse 1.8s ease-in-out infinite; text-align: center; }
     #photo-counter { margin-top: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.55); letter-spacing: 0.05em; }
     .letter-footer { text-align: center; margin-top: 2.5rem; font-family: 'Playfair Display', serif; font-style: italic; font-size: 1.15rem; color: var(--lavender-deep); }
     #confetti-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 50; }
@@ -390,7 +390,7 @@
   <div id="letter-card">
     <button id="close-btn" onclick="closeLetter()" title="Close">×</button>
     <div class="letter-header">
-      <h1>Happy Birthday, Jazi</h1>
+      <h1>Happy Birthday, Jazi 🍓</h1>
       <div class="subtitle">to you whom I love most</div>
     </div>
     <div class="letter-divider"></div>
@@ -690,28 +690,13 @@
 
   /* ── Photo Stack ─────────────────────────────────── */
   const photos = [
-    { src: "Photos/chat.jpg", caption: "our first convo" },
-    { src: "Photos/vd.jpg", caption: "our first official-ish date (sa valentines pa talaga)" },
-    { src: "Photos/boba.jpg", caption: "with boba" },
-    { src: "Photos/pd.jpg", caption: "first time playing pool together" },
-    { src: "Photos/md.jpg", caption: "first movie date" },
-    { src: "Photos/mcdo.jpg", caption: "mcdo gang" },
-    { src: "Photos/bh.jpg", caption: "your first visit sa bh" },
-    { src: "Photos/l1.jpg", caption: "langi" },
-    { src: "Photos/shd.jpg", caption: "first sizig hut date" },
-    { src: "Photos/cb.jpg", caption: "couple bracelet :)" },
-    { src: "Photos/sf.jpg", caption: "shadow fight??" },
-    { src: "Photos/nmd.jpg", caption: "first night market date" },
-    { src: "Photos/l2.jpg", caption: "langi na naman" },
-    { src: "Photos/sl.jpg", caption: "na softlaunch ni purcom baddie??" },
-    { src: "Photos/l3.jpg", caption: "walang katapusang langi" },
-    { src: "Photos/so.jpg", caption: "first sleepover" },
-    { src: "Photos/m1.jpg", caption: "first meetup w/ my elem friends" },
-    { src: "Photos/vc.jpg", caption: "videocall na para bang di buong araw magkasama" },
-    { src: "Photos/hs.jpg", caption: "fav homescreen <3" },
-    { src: "Photos/ls.jpg", caption: "fav lockscreen (na para bang hidden gem)" },
-    { src: "Photos/ilysm.jpg", caption: "I love you so much" },
-    { src: "Photos/hbd.jpg", caption: "happy birthday, my wife" },
+    { src: "Photos/1.jpg", caption: "our first official-ish (valentines) date 🪻" },
+    { src: "Photos/1.jpg", caption: "with boba 🍓" },
+    { src: "Photos/2.jpg", caption: "our first time playing pool together 🎱" },
+    { src: "Photos/3.jpg", caption: "our first movie date 🎥" },
+    { src: "Photos/4.jpg", caption: "best day ever 🎉" },
+    { src: "Photos/5.jpg", caption: "I love you so much 💗" },
+    { src: "Photos/6.jpg", caption: "happy birthday, my love 🎂" },
   ];
 
   let photoIndex = -1;
@@ -841,30 +826,26 @@
 
   /* ── Init ────────────────────────────────────────── */
   window.addEventListener('load', () => {
-    // Show the dialogue phase (strawberry visible) but don't start typing yet
-    // Wait for first tap/click/keypress before beginning
     function begin() {
-      startBgm();
+      startBgm(); // called directly inside user gesture — guaranteed to work on mobile
       setTimeout(() => showDialogue(0), 300);
     }
-    document.addEventListener('click',      begin, { once: true });
-    document.addEventListener('keydown',    begin, { once: true });
-    document.addEventListener('touchstart', begin, { once: true });
+    // use capture:true so this fires before anything else on the page
+    document.addEventListener('click',      begin, { once: true, capture: true });
+    document.addEventListener('touchend',   begin, { once: true, capture: true });
+    document.addEventListener('keydown',    begin, { once: true, capture: true });
   });
 
   /* ── Background Music ───────────────────────────── */
   const bgm = new Audio('Audio/bgm.mp3');
   bgm.loop = true;
-  bgm.volume = 0.05;
+  bgm.volume = 0.10;
   let bgmStarted = false;
   function startBgm() {
     if (bgmStarted) return;
     bgmStarted = true;
     bgm.play().catch(() => {});
   }
-  document.addEventListener('click', startBgm, { once: true });
-  document.addEventListener('keydown', startBgm, { once: true });
-  document.addEventListener('touchstart', startBgm, { once: true });
 
   /* ── Talking Sound ───────────────────────────────── */
   const talkingSfx = new Audio('Audio/talking.mp3');
@@ -874,7 +855,7 @@
 
   /* ── Shake Sound ─────────────────────────────────── */
   const shakeSfx = new Audio('Audio/shaking.mp3');
-  shakeSfx.volume = 0.4;
+  shakeSfx.volume = 0.3;
   shakeSfx.preload = 'auto';
   let shakeTimer = null;
 
