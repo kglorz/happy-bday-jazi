@@ -390,7 +390,7 @@
   <div id="letter-card">
     <button id="close-btn" onclick="closeLetter()" title="Close">×</button>
     <div class="letter-header">
-      <h1>Happy Birthday, Jazi 🍓</h1>
+      <h1>Happy Birthday, Jazi</h1>
       <div class="subtitle">to you whom I love most</div>
     </div>
     <div class="letter-divider"></div>
@@ -531,7 +531,7 @@
   function setTalking(state) {
     isTalking = state;
     if (!state) { setMouth(false); talkingSfx.pause(); talkingSfx.currentTime = 0; }
-    if (state) { berrySvg.classList.add('talking'); talkingSfx.play().catch(() => {}); }
+    if (state) { berrySvg.classList.add('talking'); if (talkingEnabled) talkingSfx.play().catch(() => {}); }
     else        berrySvg.classList.remove('talking');
   }
   function typeText(text, onDone) {
@@ -621,7 +621,7 @@
     clearTimeout(miniTypingTimer);
     miniBubbleText.textContent = '';
     miniCursor.style.display = 'inline-block';
-    talkingSfx.play().catch(() => {});
+    if (talkingEnabled) talkingSfx.play().catch(() => {});
     let i = 0;
     function tick() {
       if (i < text.length) {
@@ -655,11 +655,17 @@
     const tapHint  = document.getElementById('tap-hint');
 
     if (giftClicks === 1) {
+      // shake the whole box
+      wrap.classList.remove('gift-wiggle'); void wrap.offsetWidth; wrap.classList.add('gift-wiggle');
+      wrap.addEventListener('animationend', () => wrap.classList.remove('gift-wiggle'), { once: true });
       lidGrp.classList.remove('lift2','lift3'); void lidGrp.offsetWidth; lidGrp.classList.add('lift1');
       setTimeout(() => wordI.classList.add('visible'), 250);
       tapHint.textContent = '💜 tap again 💜';
       showMiniPrompt(giftPrompts[0]);
     } else if (giftClicks === 2) {
+      // shake the whole box
+      wrap.classList.remove('gift-wiggle'); void wrap.offsetWidth; wrap.classList.add('gift-wiggle');
+      wrap.addEventListener('animationend', () => wrap.classList.remove('gift-wiggle'), { once: true });
       lidGrp.classList.remove('lift1','lift3'); void lidGrp.offsetWidth; lidGrp.classList.add('lift2');
       setTimeout(() => wordLove.classList.add('visible'), 250);
       tapHint.textContent = '💜 one more time 💜';
@@ -684,13 +690,28 @@
 
   /* ── Photo Stack ─────────────────────────────────── */
   const photos = [
-    { src: "Photos/1.jpg", caption: "our first official-ish (valentines) date 🪻" },
-    { src: "Photos/1.jpg", caption: "with boba 🍓" },
-    { src: "Photos/2.jpg", caption: "our first time playing pool together 🎱" },
-    { src: "Photos/3.jpg", caption: "our first movie date 🎥" },
-    { src: "Photos/4.jpg", caption: "best day ever 🎉" },
-    { src: "Photos/5.jpg", caption: "I love you so much 💗" },
-    { src: "Photos/6.jpg", caption: "happy birthday, my love 🎂" },
+    { src: "Photos/chat.jpg", caption: "our first convo" },
+    { src: "Photos/vd.jpg", caption: "our first official-ish date (sa valentines pa talaga)" },
+    { src: "Photos/boba.jpg", caption: "with boba" },
+    { src: "Photos/pd.jpg", caption: "first time playing pool together" },
+    { src: "Photos/md.jpg", caption: "first movie date" },
+    { src: "Photos/mcdo.jpg", caption: "mcdo gang" },
+    { src: "Photos/bh.jpg", caption: "your first visit sa bh" },
+    { src: "Photos/l1.jpg", caption: "langi" },
+    { src: "Photos/shd.jpg", caption: "first sizig hut date" },
+    { src: "Photos/cb.jpg", caption: "couple bracelet :)" },
+    { src: "Photos/sf.jpg", caption: "shadow fight??" },
+    { src: "Photos/nmd.jpg", caption: "first night market date" },
+    { src: "Photos/l2.jpg", caption: "langi na naman" },
+    { src: "Photos/sl.jpg", caption: "na softlaunch ni purcom baddie??" },
+    { src: "Photos/l3.jpg", caption: "walang katapusang langi" },
+    { src: "Photos/so.jpg", caption: "first sleepover" },
+    { src: "Photos/m1.jpg", caption: "first meetup w/ my elem friends" },
+    { src: "Photos/vc.jpg", caption: "videocall na para bang di buong araw magkasama" },
+    { src: "Photos/hs.jpg", caption: "fav homescreen <3" },
+    { src: "Photos/ls.jpg", caption: "fav lockscreen (na para bang hidden gem)" },
+    { src: "Photos/ilysm.jpg", caption: "I love you so much" },
+    { src: "Photos/hbd.jpg", caption: "happy birthday, my wife" },
   ];
 
   let photoIndex = -1;
@@ -718,10 +739,16 @@
 
   let firstPhotoRun = true;
 
+  let talkingEnabled = true;
+
   function openPhotoStack() {
     photoIndex = -1;
     stackEl.innerHTML = '';
     document.getElementById('open-shelf').classList.remove('show');
+    // stop talking sfx — strawberry is done for good
+    talkingEnabled = false;
+    talkingSfx.pause();
+    talkingSfx.currentTime = 0;
     // hide the mini strawberry — it's done its job
     miniBerryWrap.style.transition = 'opacity 0.4s ease';
     miniBerryWrap.style.opacity = '0';
@@ -828,7 +855,7 @@
   /* ── Background Music ───────────────────────────── */
   const bgm = new Audio('Audio/bgm.mp3');
   bgm.loop = true;
-  bgm.volume = 0.10;
+  bgm.volume = 0.05;
   let bgmStarted = false;
   function startBgm() {
     if (bgmStarted) return;
@@ -842,7 +869,7 @@
   /* ── Talking Sound ───────────────────────────────── */
   const talkingSfx = new Audio('Audio/talking.mp3');
   talkingSfx.loop = true;
-  talkingSfx.volume = 0.20;
+  talkingSfx.volume = 0.10;
   talkingSfx.preload = 'auto';
 
   /* ── Shake Sound ─────────────────────────────────── */
